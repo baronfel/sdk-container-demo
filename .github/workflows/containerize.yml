@@ -13,9 +13,9 @@ jobs:
       - name: Docker Login
         uses: actions-hub/docker/login@master
         env:
-          DOCKER_REGISTRY_URL: ghcr.io
-          DOCKER_USERNAME: baronfel
-          DOCKER_PASSWORD: ${{ secrets.CONTAINER_PUSH_PAT }}
+          DOCKER_REGISTRY_URL: sdkcontainerdemo.azurecr.io
+          DOCKER_USERNAME: ${{ secrets.ACR_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.ACR_PAT }}
       - name: Build
         run: dotnet build --os linux --arch x64 --configuration Release
         env:
@@ -26,8 +26,8 @@ jobs:
       - name: Tag built container with GitHub Registry url
         uses: actions-hub/docker/cli@master
         with:
-          args: tag sdk-container-demo:1.0.0 ghcr.io/baronfel/sdk-container-demo:latest
+          args: tag sdk-container-demo:1.0.0 sdkcontainerdemo.azurecr.io/baronfel/sdk-container-demo:latest
       - name: Push built container to GitHub Registry
         uses: actions-hub/docker/cli@master
         with:
-          args: push ghcr.io/baronfel/sdk-container-demo:latest
+          args: push sdkcontainerdemo.azurecr.io/baronfel/sdk-container-demo:latest
