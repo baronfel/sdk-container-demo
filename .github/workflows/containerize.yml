@@ -16,11 +16,6 @@ jobs:
           DOCKER_REGISTRY_URL: sdkcontainerdemo.azurecr.io
           DOCKER_USERNAME: ${{ secrets.ACR_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.ACR_PAT }}
-      - name: Build
-        run: dotnet build --os linux --arch x64 --configuration Release
-        env:
-          GITHUB_USERNAME: baronfel
-          GITHUB_TOKEN: ${{ secrets.CONTAINER_PUSH_PAT }}
       - name: Publish
         run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=DefaultContainer
       - name: Tag built container with Azure Container Registry url
