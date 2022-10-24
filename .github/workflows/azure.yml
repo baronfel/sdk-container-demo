@@ -1,0 +1,24 @@
+name: Containerize ASP.NET Core application
+
+on: [push]
+
+jobs:
+  azure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+
+      - name: Log in to container registry
+        uses: azure/docker-login@v1
+        env:
+          DOCKER_CONFIG: '/home/runner/.docker'
+        with:
+          login-server: sdkcontainerdemo.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PAT }}
+
+      - name: Publish
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=azure
