@@ -16,7 +16,7 @@ jobs:
         env:
           DOCKER_CONFIG: '/home/runner/.docker'
         with:
-          login-server: sdkcontainerdemo.azurecr.io
+          login-server: ghcr.io
           username: baronfel
           password: ${{ secrets.GITHUB_TOKEN }}
 
