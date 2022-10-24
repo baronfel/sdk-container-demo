@@ -4,6 +4,7 @@ on: [push]
 
 jobs:
   github:
+    name: GitHub Package Registry
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
