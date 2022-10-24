@@ -1,4 +1,4 @@
-name: Containerize ASP.NET Core application
+name: Containerize- Azure
 
 on: [push]
 
