@@ -98,10 +98,7 @@ jobs:
           credentials_json: ${{ secrets.GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY }}
 
       # Configure docker to use the gcloud command-line tool as a credential helper
-      - run: |
-          # Set up docker to authenticate
-          # via gcloud command-line tool.
-          gcloud auth configure-docker
+      - run: gcloud auth configure-docker us-south1-docker.pkg.dev
 
       - name: Publish
         run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=gcp -bl
