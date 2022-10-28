@@ -104,4 +104,10 @@ jobs:
           gcloud auth configure-docker
 
       - name: Publish
-        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=gcp
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=gcp -bl
+      
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: GCP.binlog
+          path: msbuild.binlog
