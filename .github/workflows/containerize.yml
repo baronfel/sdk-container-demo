@@ -1,0 +1,65 @@
+name: Containerize 
+
+on: [push]
+
+jobs:
+  azure:
+    name: Azure Container Registry
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+
+      - name: Log in to container registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: sdkcontainerdemo.azurecr.io
+          username: sdkcontainerdemo
+          password: ${{ secrets.ACR_PAT }}
+
+      - name: Publish
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=azure
+  
+  github:
+    name: GitHub Package Registry
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+
+      - name: Log in to container registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ghcr.io
+          username: baronfel
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=github
+
+  aws:
+    name: AWS Elastic Container Registry
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Publish
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=aws
