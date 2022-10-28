@@ -93,10 +93,10 @@ jobs:
         uses: actions/setup-dotnet@v2
 
       # Setup gcloud CLI
-      - uses: google-github-actions/setup-gcloud@main
+      - uses: google-github-actions/auth@main
         with:
-          version: '406.0.0'
-          service_account_key: ${{ secrets.GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY }} 
+          service_account: 'container-package-pusher@dotnet-sdk-demos.iam.gserviceaccount.com'
+
 
       # Configure docker to use the gcloud command-line tool as a credential helper
       - run: |
