@@ -1,4 +1,4 @@
-name: Containerize 
+name: Containerize
 
 on: [push]
 
@@ -21,7 +21,7 @@ jobs:
 
       - name: Publish
         run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=azure
-  
+
   github:
     name: GitHub Package Registry
     runs-on: ubuntu-latest
@@ -63,3 +63,22 @@ jobs:
 
       - name: Publish
         run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=aws
+
+  gitlab:
+    name: GitLab Container Registry
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+
+      - name: Log in to container registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: registry.gitlab.com
+          username: chet.husk
+          password: ${{ secrets.GITLAB_CONTAINER_PAT }}
+
+      - name: Publish
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=gitlab
