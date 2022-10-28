@@ -82,3 +82,27 @@ jobs:
 
       - name: Publish
         run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=gitlab
+
+  gcp:
+    name: Google Cloud Artifact Registry
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+
+      # Setup gcloud CLI
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@v0.6.2
+        with:
+          version: '406.0.0'
+          service_account_key: ${{ secrets.GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY }} 
+
+      # Configure docker to use the gcloud command-line tool as a credential helper
+      - run: |
+          # Set up docker to authenticate
+          # via gcloud command-line tool.
+          gcloud auth configure-docker
+
+      - name: Publish
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=gcp
