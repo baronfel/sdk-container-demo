@@ -76,7 +76,7 @@ jobs:
       - name: Log in to container registry
         uses: azure/docker-login@v1
         with:
-          login-server: registry.gitlab.com
+          login-server: gitlab.com
           username: chet.husk
           password: ${{ secrets.GITLAB_CONTAINER_PAT }}
 
