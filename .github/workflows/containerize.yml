@@ -95,8 +95,7 @@ jobs:
       # Setup gcloud CLI
       - uses: google-github-actions/auth@main
         with:
-          service_account: 'container-package-pusher@dotnet-sdk-demos.iam.gserviceaccount.com'
-
+          credentials_json: ${{ secrets.GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY }}
 
       # Configure docker to use the gcloud command-line tool as a credential helper
       - run: |
