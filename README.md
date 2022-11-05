@@ -6,5 +6,5 @@ and pushing that container to a registry.
 
 The most interesting parts of this repo are
 
-* The [workflow definition](.\.github\workflows\containerize.yml)
+* The [workflow definition](.github/workflows/containerize.yml)
 * An [example Action run](https://github.com/baronfel/sdk-container-demo/runs/7888742074?check_suite_focus=true) showing the container push to Azure Container Registry
