@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Build.Containers" Version="0.3.0-alpha.20.gd0ab12fdbd" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.Build.Containers" Version="0.3.0-alpha.21.g4cd88045e7" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
