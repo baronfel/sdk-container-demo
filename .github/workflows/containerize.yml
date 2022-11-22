@@ -2,7 +2,12 @@ name: Containerize
 
 on: [push]
 
+env:
+  GITHUB_USERNAME: baronfel
+  GITHUB_TOKEN: ${{ secrets.CONTAINER_PUSH_PAT }}
+
 jobs:
+
   azure:
     name: Azure Container Registry
     runs-on: ubuntu-latest
