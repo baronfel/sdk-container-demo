@@ -142,7 +142,7 @@ jobs:
         uses: actions/setup-dotnet@v2
 
       - name: Publish
-        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=localdocker-trimmedandchiseled -bl
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=localdocker-trimmedandchiseled -bl --self-contained true
       
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
