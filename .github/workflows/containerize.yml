@@ -1,6 +1,8 @@
 name: Containerize
 
-on: [push]
+on:
+  push:
+  workflow_dispatch:
 
 env:
   GITHUB_USERNAME: baronfel
