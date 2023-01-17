@@ -109,7 +109,7 @@ jobs:
 
       - name: Publish
         run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=gcp -bl
-      
+
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
         with:
@@ -127,7 +127,7 @@ jobs:
 
       - name: Publish
         run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=localdocker -bl
-      
+
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
         with:
@@ -145,9 +145,34 @@ jobs:
 
       - name: Publish
         run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=localdocker-trimmedandchiseled -bl --self-contained true
-      
+
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
         with:
           name: localdocker-trimmedandchiseled.binlog
+          path: msbuild.binlog
+
+  dockerhub:
+    name: Push to Docker hub
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+
+      - name: Log in to container registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: registry-1.docker.io
+          username: chusk3
+          password: ${{ secrets.DOCKERHUB_PAT }}
+
+      - name: Publish
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=dockerhub -bl
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: dockerhub.binlog
           path: msbuild.binlog
