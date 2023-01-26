@@ -6,10 +6,27 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>sdk_container_demo</RootNamespace>
     <SelfContained>false</SelfContained>
+    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Packaging properties">
+    <Description>A project that demonstrates publishing to various container registries using just the .NET SDK</Description>
+    <Authors>Chet Husk</Authors>
+    <PackageProjectUrl>https://github.com/baronfel/sdk-container-demo/actions</PackageProjectUrl>
+    <PackageDocumentationUrl>https://github.com/baronfel/sdk-container-demo/blob/main/README.md</PackageDocumentationUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Title>.NET SDK 7 Container Demo</Title>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Build.Containers" Version="0.3.*" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.Build.Containers" Version="0.4.*-*" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dotnet.ReproducibleBuilds" Version="1.1.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

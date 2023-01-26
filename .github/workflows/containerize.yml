@@ -10,8 +10,8 @@ env:
 
 jobs:
 
-  azure:
-    name: Azure Container Registry
+  azure-admin-credentials:
+    name: Azure Container Registry - admin credentials
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -28,6 +28,25 @@ jobs:
 
       - name: Publish
         run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=azure
+
+  azure-token-credentials:
+    name: Azure Container Registry - token credentials
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+
+      - name: Log in to container registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: sdkcontainerdemo.azurecr.io
+          username: sdk-container-demo-token
+          password: ${{ secrets.ACR_TOKEN_PASSWORD }}
+
+      - name: Publish
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=azure -p ContainerImageTag=token-credential
 
   github:
     name: GitHub Package Registry
