@@ -6,7 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>sdk_container_demo</RootNamespace>
     <SelfContained>false</SelfContained>
-    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
+    <EnableSdkContainerSupport>false</EnableSdkContainerSupport> <!-- we're using our own version -->
+    <ContainerGenerateLabels>false</ContainerGenerateLabels>
   </PropertyGroup>
 
   <PropertyGroup Label="Packaging properties">
