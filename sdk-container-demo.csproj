@@ -6,27 +6,24 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>sdk_container_demo</RootNamespace>
     <SelfContained>false</SelfContained>
-    <EnableSdkContainerSupport>false</EnableSdkContainerSupport> <!-- we're using our own version -->
-    <ContainerGenerateLabels>false</ContainerGenerateLabels>
+    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
+    <SdkContainerSupportPackageVersion>0.4.*</SdkContainerSupportPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Packaging properties">
     <Description>A project that demonstrates publishing to various container registries using just the .NET SDK</Description>
     <Authors>Chet Husk</Authors>
-    <PackageProjectUrl>https://github.com/baronfel/sdk-container-demo/actions</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/baronfel/sdk-container-demo</PackageProjectUrl>
     <PackageDocumentationUrl>https://github.com/baronfel/sdk-container-demo/blob/main/README.md</PackageDocumentationUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Title>.NET SDK 7 Container Demo</Title>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Build.Containers" Version="0.4.0-alpha.63" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Dotnet.ReproducibleBuilds" Version="1.1.1">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>build; buildtransitive</IncludeAssets>
+      <PrivateAssets>build; buildtransitive</PrivateAssets>
+      <ExcludeAssets>runtime;</ExcludeAssets>
     </PackageReference>
   </ItemGroup>
 
