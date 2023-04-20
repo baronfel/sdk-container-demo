@@ -272,3 +272,28 @@ jobs:
         with:
           name: quay.binlog
           path: msbuild.binlog
+  
+  harbor:
+    name: Push to Harbor
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+
+      - name: Log in to container registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: demo.goharbor.io
+          username: chusk3
+          password: ${{ secrets.HARBOR_PASSWORD }}
+
+      - name: Publish
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=harbor -bl
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: harbor.binlog
+          path: msbuild.binlog
