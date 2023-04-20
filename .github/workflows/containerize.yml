@@ -7,6 +7,7 @@ on:
 env:
   GITHUB_USERNAME: baronfel
   GITHUB_TOKEN: ${{ secrets.CONTAINER_PUSH_PAT }}
+  SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: false
 
 jobs:
 
