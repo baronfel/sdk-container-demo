@@ -286,7 +286,7 @@ jobs:
         uses: azure/docker-login@v1
         with:
           login-server: demo.goharbor.io
-          username: chusk3
+          username: "robot$net-sdk-container-demo+push-daemon"
           password: ${{ secrets.HARBOR_PASSWORD }}
 
       - name: Publish
