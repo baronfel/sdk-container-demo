@@ -88,6 +88,8 @@ jobs:
   github:
     name: GitHub Package Registry
     runs-on: ubuntu-latest
+    env:
+      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: true
     steps:
       - uses: actions/checkout@v3
 
@@ -145,6 +147,8 @@ jobs:
   gitlab:
     name: GitLab Container Registry
     runs-on: ubuntu-latest
+    env:
+      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: true
     steps:
       - uses: actions/checkout@v3
 
@@ -226,6 +230,8 @@ jobs:
   dockerhub:
     name: Push to Docker hub
     runs-on: ubuntu-latest
+    env:
+      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: true
     steps:
       - uses: actions/checkout@v3
 
@@ -276,6 +282,8 @@ jobs:
   harbor:
     name: Push to Harbor
     runs-on: ubuntu-latest
+    env:
+      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: true
     steps:
       - uses: actions/checkout@v3
 
