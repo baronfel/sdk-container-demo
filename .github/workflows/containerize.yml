@@ -146,9 +146,10 @@ jobs:
 
       - name: Archive binlog
         uses: actions/upload-artifact@v3
+        if: failure()
         with:
-          name: gitlab.binlog
-          path: aws.binlog
+          name: aws.binlog
+          path: msbuild.binlog
 
   gitlab:
     name: GitLab Container Registry
@@ -173,6 +174,7 @@ jobs:
 
       - name: Archive binlog
         uses: actions/upload-artifact@v3
+        if: failure()
         with:
           name: gitlab.binlog
           path: msbuild.binlog
