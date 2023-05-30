@@ -7,7 +7,7 @@
     <RootNamespace>sdk_container_demo</RootNamespace>
     <SelfContained>false</SelfContained>
     <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
-    <SdkContainerSupportPackageVersion>0.4.*</SdkContainerSupportPackageVersion>
+    <SdkContainerSupportPackageVersion>7.0.400-dev</SdkContainerSupportPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Packaging properties">
@@ -27,4 +27,15 @@
     </PackageReference>
   </ItemGroup>
 
+  <!-- Example of how you could push the same image to multiple registries via a single target-->
+
+  <ItemGroup>
+    <DestinationRegistry Include="sdk-container-demo.azurecr.io" />
+    <DestinationRegistry Include="ghcr.io" />
+    <SingleRegistryPublish Include="$(MSBuildProjectFullPath)" AdditionalProperties="ContainerRegistry=%(DestinationRegistry)" />
+  </ItemGroup>
+
+  <Target Name="MultiPush" DependsOnTargets="Publish">
+    <MSBuild Projects="@(SingleRegistryPublish)" Targets="PublishContainer" BuildInParallel="true" />
+  </Target>
 </Project>
