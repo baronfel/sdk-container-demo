@@ -131,7 +131,7 @@ jobs:
         uses: actions/setup-dotnet@v2
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -142,7 +142,13 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Publish
-        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=aws
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=aws /bl
+
+      - name: Archive binlog
+        uses: actions/upload-artifact@v3
+        with:
+          name: gitlab.binlog
+          path: aws.binlog
 
   gitlab:
     name: GitLab Container Registry
@@ -163,7 +169,13 @@ jobs:
           password: ${{ secrets.GITLAB_CONTAINER_PAT }}
 
       - name: Publish
-        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=gitlab
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=gitlab /bl
+
+      - name: Archive binlog
+        uses: actions/upload-artifact@v3
+        with:
+          name: gitlab.binlog
+          path: msbuild.binlog
 
   gcp:
     name: Google Cloud Artifact Registry
@@ -278,7 +290,7 @@ jobs:
         with:
           name: quay.binlog
           path: msbuild.binlog
-  
+
   harbor:
     name: Push to Harbor
     runs-on: ubuntu-latest
