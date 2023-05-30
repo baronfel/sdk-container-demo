@@ -111,7 +111,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: true
-      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD_SIZE_BYTES: 104857600
     steps:
       - uses: actions/checkout@v3
 
