@@ -246,6 +246,30 @@ jobs:
           name: localdocker-trimmedandchiseled.binlog
           path: msbuild.binlog
 
+  localpodman:
+      name: Local Podman installation
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+
+        - name: Setup .NET SDK
+          uses: actions/setup-dotnet@v2
+
+        - name: Publish
+          run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=localpodman -bl
+
+        - name: List images (podman)
+          run: podman image list --all
+
+        - name: List images (docker)
+          run: docker image list --all
+
+        - name: Archive code coverage results
+          uses: actions/upload-artifact@v3
+          with:
+            name: localpodman.binlog
+            path: msbuild.binlog
+
   dockerhub:
     name: Push to Docker hub
     runs-on: ubuntu-latest
