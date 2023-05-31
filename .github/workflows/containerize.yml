@@ -7,7 +7,6 @@ on:
 env:
   GITHUB_USERNAME: baronfel
   GITHUB_TOKEN: ${{ secrets.CONTAINER_PUSH_PAT }}
-  SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: false
 
 jobs:
 
@@ -88,8 +87,6 @@ jobs:
   github:
     name: GitHub Package Registry
     runs-on: ubuntu-latest
-    env:
-      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: true
     steps:
       - uses: actions/checkout@v3
 
@@ -126,9 +123,6 @@ jobs:
   aws:
     name: AWS Elastic Container Registry
     runs-on: ubuntu-latest
-    env:
-      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: true
-      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD_SIZE_BYTES: 104857600
     steps:
       - uses: actions/checkout@v3
 
@@ -159,8 +153,6 @@ jobs:
   gitlab:
     name: GitLab Container Registry
     runs-on: ubuntu-latest
-    env:
-      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: true
     steps:
       - uses: actions/checkout@v3
 
@@ -273,8 +265,6 @@ jobs:
   dockerhub:
     name: Push to Docker hub
     runs-on: ubuntu-latest
-    env:
-      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: true
     steps:
       - uses: actions/checkout@v3
 
@@ -325,8 +315,6 @@ jobs:
   harbor:
     name: Push to Harbor
     runs-on: ubuntu-latest
-    env:
-      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: true
     steps:
       - uses: actions/checkout@v3
 
