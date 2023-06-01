@@ -123,6 +123,9 @@ jobs:
   aws:
     name: AWS Elastic Container Registry
     runs-on: ubuntu-latest
+    env:
+      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: true
+      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD_SIZE_BYTES: 1000
     steps:
       - uses: actions/checkout@v3
 
