@@ -82,7 +82,14 @@ jobs:
           password: ${{ env.DOCKER_TOKEN }}
 
       - name: Publish
-        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=azure -p ContainerImageTag=ad-credential
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=azure -p ContainerImageTag=ad-credential /bl
+
+      - name: Archive binlog
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: azure-ad.binlog
+          path: msbuild.binlog
 
   github:
     name: GitHub Package Registry
@@ -148,7 +155,7 @@ jobs:
 
       - name: Archive binlog
         uses: actions/upload-artifact@v3
-        if: failure()
+        if: always()
         with:
           name: aws.binlog
           path: msbuild.binlog
