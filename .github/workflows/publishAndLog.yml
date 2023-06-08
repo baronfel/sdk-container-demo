@@ -1,0 +1,38 @@
+on:
+  workflow_call:
+    inputs:
+      profile:
+        type: string
+        required: true
+        description: "The name of the publish profile to use. Must match the name (without extension) of a publish profile in the Properties/PublishProfiles folder of the project."
+      variant:
+        type: string
+        required: false
+        default: "default"
+        description: "The 'variant' of the build to be run - this is used when testing different auth modes for the same publish profile, for example."
+      selfContained:
+        type: string
+        default: "[true, false]"
+        required: false
+        description: "The values of self-contained to test this variant with. Some variants don't work with SC/FDD builds, so use this to control which ones are tested. Valid values are 'true', 'false', or '[true, false]' to test both."
+
+jobs:
+    publish-container:
+
+      strategy:
+        matrix:
+          selfContained: ${{ fromJson(inputs.selfContained) }}
+        fail-fast: false # we want all permutations to run
+
+      name: "Publish profile ${{ inputs.profile }} (sc: ${{ matrix.selfContained }})"
+      runs-on: ubuntu-latest
+      steps:
+      - name: Publish
+        run: dotnet publish --os linux --arch x64 --configuration Release -p:PublishProfile=${{ inputs.profile }} --self-contained ${{ matrix.selfContained }} -p VersionSuffix=${{ inputs.variant }} /bl
+      
+      - name: Archive binlog
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+            name: ${{ inputs.profile}}-${{ inputs.variant }}-sc-${{ matrix.selfContained }}.binlog
+            path: msbuild.binlog
