@@ -308,3 +308,14 @@ jobs:
       - uses: ./.github/actions/publishAndLog
         with:
           profile: harbor
+
+  dockerfile:
+    name: Build Dockerfile as a comparison
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: docker/build-push-action@v4
+        with:
+          context: .
+          tags: chusk3/net-sdk-container-demo:dockerfile
