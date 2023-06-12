@@ -315,7 +315,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: docker/build-push-action@v4
+      - name: publish self-contained
+        uses: docker/build-push-action@v4
         with:
           context: .
           tags: chusk3/net-sdk-container-demo:dockerfile
+          file: ./Dockerfile-sc
+      
+      - name: publish framework-dependent
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          tags: chusk3/net-sdk-container-demo:dockerfile
+          file: ./Dockerfile-fdd
