@@ -312,8 +312,6 @@ jobs:
   harbor:
     name: Push to Harbor
     runs-on: ubuntu-latest
-    # Disabled until we can get a harbor instance running
-    if: true == false 
     continue-on-error: true
     steps:
       - uses: actions/checkout@v3
