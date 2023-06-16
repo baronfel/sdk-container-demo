@@ -221,6 +221,7 @@ jobs:
       - uses: ./.github/actions/publishAndLog
         with:
           profile: gcp
+          chunked: false # GCP doesn't support chunking at all, so don't test that method
 
   localdocker:
     name: Local Docker Daemon
