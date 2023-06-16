@@ -7,7 +7,7 @@
     <RootNamespace>sdk_container_demo</RootNamespace>
     <SelfContained>false</SelfContained>
     <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
-    <SdkContainerSupportPackageVersion>7.0.400-dev</SdkContainerSupportPackageVersion>
+    <SdkContainerSupportPackageVersion>7.0.305</SdkContainerSupportPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Packaging properties">
