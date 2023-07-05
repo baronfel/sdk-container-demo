@@ -131,12 +131,9 @@ jobs:
           profile: github
           variant: docker-cli
 
-  aws:
-    name: AWS Elastic Container Registry
+  aws-private:
+    name: AWS ECR (Private)
     runs-on: ubuntu-latest
-    env:
-      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: true
-      SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD_SIZE_BYTES: 1000
     steps:
       - uses: actions/checkout@v3
 
@@ -156,7 +153,33 @@ jobs:
 
       - uses: ./.github/actions/publishAndLog
         with:
-          profile: aws
+          profile: aws-private
+
+  aws-public:
+    name: AWS ECR (Public)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public
+
+      - uses: ./.github/actions/publishAndLog
+        with:
+          profile: aws-public
 
   gitlab:
     name: GitLab Container Registry
@@ -198,6 +221,7 @@ jobs:
       - uses: ./.github/actions/publishAndLog
         with:
           profile: gcp
+          chunked: false # GCP doesn't support chunking at all, so don't test that method
 
   localdocker:
     name: Local Docker Daemon
@@ -289,8 +313,6 @@ jobs:
   harbor:
     name: Push to Harbor
     runs-on: ubuntu-latest
-    # Disabled until we can get a harbor instance running
-    if: true == false 
     continue-on-error: true
     steps:
       - uses: actions/checkout@v3
@@ -315,7 +337,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: docker/build-push-action@v4
+      - name: publish self-contained
+        uses: docker/build-push-action@v4
         with:
           context: .
           tags: chusk3/net-sdk-container-demo:dockerfile
+          file: ./Dockerfile-sc
+      
+      - name: publish framework-dependent
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          tags: chusk3/net-sdk-container-demo:dockerfile
+          file: ./Dockerfile-fdd
