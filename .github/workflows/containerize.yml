@@ -355,8 +355,6 @@ jobs:
     name: Push to OpenShift
     runs-on: ubuntu-latest
     continue-on-error: true
-    env:
-        OPENSHIFT_SERVER_URL: console-openshift-console.apps.sandbox-m4.g2pi.p1.openshiftapps.com
     steps:
       - uses: actions/checkout@v3
 
@@ -366,12 +364,12 @@ jobs:
       - name: Login to Openshift
         uses: redhat-actions/oc-login@v1
         with:
-          openshift_server_url: ${{ env.OPENSHIFT_SERVER_URL }}
+          openshift_server_url: https://api.sandbox-m4.g2pi.p1.openshiftapps.com:6443
           openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
 
       - name: Log in to container registry
         run: 
-            docker login -u openshift -p $(oc whoami -t) ${{ env.OPENSHIFT_SERVER_URL }}
+            docker login -u openshift -p $(oc whoami -t) console-openshift-console.apps.sandbox-m4.g2pi.p1.openshiftapps.com
 
       - uses: ./.github/actions/publishAndLog
         with:
