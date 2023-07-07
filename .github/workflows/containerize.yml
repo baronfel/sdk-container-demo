@@ -350,3 +350,29 @@ jobs:
           context: .
           tags: chusk3/net-sdk-container-demo:dockerfile
           file: ./Dockerfile-fdd
+  
+  openshift:
+    name: Push to OpenShift
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    env:
+        OPENSHIFT_SERVER_URL: console-openshift-console.apps.sandbox-m4.g2pi.p1.openshiftapps.com
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+      
+      - name: Login to Openshift
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ env.OPENSHIFT_SERVER_URL }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+
+      - name: Log in to container registry
+        run: 
+            docker login -u openshift -p $(oc whoami -t) ${{ env.OPENSHIFT_SERVER_URL }}
+
+      - uses: ./.github/actions/publishAndLog
+        with:
+          profile: openshift
