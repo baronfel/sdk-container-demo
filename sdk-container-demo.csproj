@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>sdk_container_demo</RootNamespace>
     <SelfContained>false</SelfContained>
-    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
+    <EnableSdkContainerSupport>false</EnableSdkContainerSupport>
     <SdkContainerSupportPackageVersion>8.0.100-dev</SdkContainerSupportPackageVersion>
   </PropertyGroup>
 
@@ -25,6 +25,7 @@
       <PrivateAssets>build; buildtransitive</PrivateAssets>
       <ExcludeAssets>runtime;</ExcludeAssets>
     </PackageReference>
+   <PackageReference Include="Microsoft.Net.Build.Containers" Version="$(SdkContainerSupportPackageVersion)" />
   </ItemGroup>
 
   <!-- Example of how you could push the same image to multiple registries via a single target-->
