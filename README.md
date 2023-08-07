@@ -21,6 +21,16 @@ The commands below will probably require
 
 The different publish profiles in the [publish_profiles](./Properties/PublishProfiles/) directory target different use cases, which are described below.
 
+### Publish to local Docker
+
+This should be very simple:
+
+```bash
+dotnet publish --os linux --arch x64 -p PublishProfile=DefaultContainer
+```
+
+After that you can run the app with `docker run -p 8080:8080 sdk-container-demo`
+
 ### AWS Private
 
 This profile is used to publish the app to a private AWS ECR registry. It requires the following software to be installed and resources to be configured:
@@ -143,3 +153,39 @@ docker login --username $ACR_NAME --password $ACR_ADMIN_PASSWORD $ACR_NAME.azure
 # publish the app
 docker publish --os linux --arch x64 -p PublishProfile=azure -p ContainerRegistry=$ACR_NAME.azurecr.io
 ```
+
+### GitHub packages
+
+In order to push packages to GitHub packages you'll need to fork this repo.
+
+You'll also need a [Personal Access Token (classic)](https://github.com/settings/tokens/new) with the 'write:packages' permission.
+
+Then, login using your GitHub username and this token:
+
+```bash
+docker login ghcr.io -u <github_username> -p <personal_access_token>
+```
+
+Then, publish the app:
+
+```bash
+# Note the GitHub username is required (since there's no 'namespacing' in the registry URL)
+dotnet publish --os linux --arch x64 -p PublishProfile=github -p ContainerImageName=<github_username>/sdk-container-demo
+```
+
+### Docker Hub
+
+You'll need an [account on Docker Hub](https://hub.docker.com/signup), and you'll need to login with a [Personal Access Token for Docker Hub](https://hub.docker.com/settings/security?generateToken=true) with the 'Write' permission.
+
+Then, login using your Docker Hub username and this token:
+
+```bash
+docker login -u <docker_hub_username> -p <personal_access_token>
+```
+
+Then, publish the app:
+
+```bash
+docker publish --os linux --arch x64 -p PublishProfile=dockerhub -p ContainerImageName=<docker_hub_username>/sdk-container-demo
+```
+
