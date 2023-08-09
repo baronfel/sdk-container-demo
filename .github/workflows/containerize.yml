@@ -12,8 +12,7 @@ jobs:
   azure-admin-credentials:
     name: "Azure Container Registry - admin credentials"
     runs-on: ubuntu-latest
-    
-      
+
     steps:
       - uses: actions/checkout@v3
 
@@ -76,21 +75,44 @@ jobs:
 
       - uses: azure/CLI@v1
         with:
+          # login to the ACR using the login we just did above.
+          # this will perform a 'docker login' with the identity-token-based credential from that Azure identity
           inlineScript: |
-            echo "DOCKER_TOKEN=$(az acr login --name sdkcontainerdemo --expose-token --output tsv --query accessToken)" >> $GITHUB_ENV
-
-      - name: Log in to container registry
-        uses: azure/docker-login@v1
-        with:
-          login-server: sdkcontainerdemo.azurecr.io
-          username: 00000000-0000-0000-0000-000000000000
-          password: ${{ env.DOCKER_TOKEN }}
+            az acr login --name sdkcontainerdemo
 
       - uses: ./.github/actions/publishAndLog
         with:
           profile: azure
           variant: ad-credential
-  
+
+  azure-managed-identity:
+    name: Azure Container Registry - Managed Identity
+    runs-on: ubuntu-latest
+
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+
+      - uses: Azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_MANAGED_IDENTITY_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - uses: azure/CLI@v1
+        with:
+          # login to the ACR using the login we just did above.
+          # this will perform a 'docker login' with the identity-token-based credential from that Azure identity
+          inlineScript: |
+            az acr login --name sdkcontainerdemo
+
+      - uses: ./.github/actions/publishAndLog
+        with:
+          profile: azure
+          variant: azure-managed-identity
 
   github:
     name: GitHub Package Registry
@@ -244,7 +266,7 @@ jobs:
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
-      
+
       - uses: ./.github/actions/publishAndLog
         with:
           profile: localdocker
@@ -343,7 +365,7 @@ jobs:
           context: .
           tags: chusk3/net-sdk-container-demo:dockerfile
           file: ./Dockerfile-sc
-      
+
       - name: publish framework-dependent
         uses: docker/build-push-action@v4
         with:
