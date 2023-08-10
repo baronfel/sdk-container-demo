@@ -130,7 +130,7 @@ az login --service-principal -u $appId -p $password -t $tenant
 az acr login --name $ACR_NAME
 
 # now push the app
-docker publish --os linux --arch x64 -p PublishProfile=azure -p ContainerRegistry=$ACR_NAME.azurecr.io
+dotnet publish --os linux --arch x64 -p PublishProfile=azure -p ContainerRegistry=$ACR_NAME.azurecr.io
 ```
 
 When you're done logout with `az logout` to prevent messing with the other authentication mechanisms for Azure.
@@ -152,7 +152,7 @@ $ACR_ADMIN_PASSWORD=$(az acr credential show --name $ACR_NAME --query "passwords
 docker login --username $ACR_NAME --password $ACR_ADMIN_PASSWORD $ACR_NAME.azurecr.io
 
 # publish the app
-docker publish --os linux --arch x64 -p PublishProfile=azure -p ContainerRegistry=$ACR_NAME.azurecr.io
+dotnet publish --os linux --arch x64 -p PublishProfile=azure -p ContainerRegistry=$ACR_NAME.azurecr.io
 ```
 
 ### GitHub packages
@@ -187,6 +187,6 @@ docker login -u <docker_hub_username> -p <personal_access_token>
 Then, publish the app:
 
 ```bash
-docker publish --os linux --arch x64 -p PublishProfile=dockerhub -p ContainerImageName=<docker_hub_username>/sdk-container-demo
+dotnet publish --os linux --arch x64 -p PublishProfile=dockerhub -p ContainerImageName=<docker_hub_username>/sdk-container-demo
 ```
 
