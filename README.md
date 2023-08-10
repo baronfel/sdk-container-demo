@@ -64,9 +64,46 @@ Note that AWS ECR Public registry [requires authentication in `us-east-1`](https
 ```bash
 # authenticate to the public ECR
 aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+```
 
+Then, you need to activate your public ECR namespace. First, check if you have one already:
+
+```bash
 # get your 'namespace' for the public ECR
 $namespace=$(aws ecr-public describe-registries --region us-east-1 --output=json | jq -r '.registries[0].aliases[0].name')
+```
+
+if the $namespace is empty, you need to create one. First, save the following json to a file:
+
+```json
+{
+    "description": "This is a test repo for an Amazon ECR tutorial for the .NET SDK Container build tooling.",
+    "architectures": [
+        "x86", "x86-64", "ARM", "ARM 64"
+    ],
+    "operatingSystems": [
+        "Linux"
+    ],
+    "aboutText": "This repository is used as a tutorial only.",
+    "usageText": "This repository is not for public use."
+}
+```
+
+Then, create the public ECR repository with:
+
+```bash
+aws ecr-public create-repository \
+     --repository-name sdk-container-demo \
+     --catalog-data file://YOUR-FILE-NAME \
+     --region us-east-1
+```
+
+Finally, rerun the original command to get your namespace:
+
+```bash
+# get your 'namespace' for the public ECR
+$namespace=$(aws ecr-public describe-registries --region us-east-1 --output=json | jq -r '.registries[0].aliases[0].name')
+```
 
 # publish the app to the public ECR with that namespace
 
