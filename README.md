@@ -56,11 +56,12 @@ dotnet publish --os linux --arch x64 -p PublishProfile=aws-private -p ContainerR
 
 ### AWS Public
 
-This has the same prerequisites as above, but you login and push in slightly different ways:
+This has the same prerequisites as above, but you login and push in slightly different ways.
+Note that AWS ECR Public registry [requires authentication in `us-east-1`](https://docs.aws.amazon.com/AmazonECR/latest/public/getting-started-cli.html#cli-authenticate-registry) region, regardless of your other services location.
 
 ```bash
 # authenticate to the public ECR
-aws ecr-public get-login-password --region <aws_region> | docker login --username AWS --password-stdin public.ecr.aws
+aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
 
 # get your 'namespace' for the public ECR
 $namespace=$(aws ecr-public describe-registries --output=json | jq -r '.registries[0].aliases[0].name')
