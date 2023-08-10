@@ -23,7 +23,7 @@ The different publish profiles in the [publish_profiles](./Properties/PublishPro
 
 ### Publish to local Docker
 
-This should be very simple:
+Make sure your docker deamon is running (you can verify with `docker ps`). Then it should be very simple:
 
 ```bash
 dotnet publish --os linux --arch x64 -p PublishProfile=DefaultContainer
@@ -41,7 +41,9 @@ This profile is used to publish the app to a private AWS ECR registry. It requir
 * An [AWS Elastic Container Registry](https://docs.aws.amazon.com/AmazonECR/latest/userguide/getting-started-cli.html) to store images
 * A [Private AWS Elastic Container Repository](https://docs.aws.amazon.com/AmazonECR/latest/userguide/getting-started-cli.html#cli-create-repository) to push the image to
 
-Once this is setup, you [Authenticate via Docker to the AWS ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/getting-started-cli.html#cli-authenticate-registry). 
+Once this is setup, you [Authenticate via Docker to the AWS ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/getting-started-cli.html#cli-authenticate-registry).
+
+NOTE: If you are receiving error during storing of your credentials (`Error saving credentials: error storing credentials ...`), you might be hitting the [wincred limitations in support for long tokens](https://github.com/danieljoos/wincred/issues/18) - in such case you might workaround the problem by bypassing wincred ([SO post](https://stackoverflow.com/questions/60807697/docker-login-error-storing-credentials-the-stub-received-bad-data)).
 Then, push the image to the AWS ECR:
 
 ```bash
@@ -64,7 +66,7 @@ Note that AWS ECR Public registry [requires authentication in `us-east-1`](https
 aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
 
 # get your 'namespace' for the public ECR
-$namespace=$(aws ecr-public describe-registries --output=json | jq -r '.registries[0].aliases[0].name')
+$namespace=$(aws ecr-public describe-registries --region us-east-1 --output=json | jq -r '.registries[0].aliases[0].name')
 
 # publish the app to the public ECR with that namespace
 
