@@ -42,6 +42,7 @@ This profile is used to publish the app to a private AWS ECR registry. It requir
 * A [Private AWS Elastic Container Repository](https://docs.aws.amazon.com/AmazonECR/latest/userguide/getting-started-cli.html#cli-create-repository) to push the image to
 
 Once this is setup, you [Authenticate via Docker to the AWS ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/getting-started-cli.html#cli-authenticate-registry).
+
 NOTE: If you are receiving error during storing of your credentials (`Error saving credentials: error storing credentials ...`), you might be hitting the [wincred limitations in support for long tokens](https://github.com/danieljoos/wincred/issues/18) - in such case you might workaround the problem by bypassing wincred ([SO post](https://stackoverflow.com/questions/60807697/docker-login-error-storing-credentials-the-stub-received-bad-data)).
 Then, push the image to the AWS ECR:
 
