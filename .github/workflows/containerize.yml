@@ -67,18 +67,27 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
 
-      - uses: Azure/login@v1
+      - name: login to Azure using AD credentials
+        uses: Azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - uses: azure/CLI@v1
+      - name: get ACR access token
+        uses: azure/CLI@v1
         with:
           # login to the ACR using the login we just did above.
           # this will perform a 'docker login' with the identity-token-based credential from that Azure identity
           inlineScript: |
-            az acr login --name sdkcontainerdemo
+            echo "DOCKER_TOKEN=$(az acr login --name sdkcontainerdemo --expose-token --output tsv --query accessToken)" >> $GITHUB_ENV
+
+      - name: Log in to container registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: sdkcontainerdemo.azurecr.io
+          username: "00000000-0000-0000-0000-000000000000"
+          password: ${{ env.DOCKER_TOKEN }}
 
       - uses: ./.github/actions/publishAndLog
         with:
@@ -96,16 +105,25 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
 
-      - uses: Azure/login@v1
+      - name: login to azure with managed identity
+        uses: Azure/login@v1
         with:
           creds: '{"clientId":"${{ secrets.AZURE_MANAGED_IDENTITY_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_MANAGED_IDENTITY_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
 
-      - uses: azure/CLI@v1
+      - name: get ACR access token
+        uses: azure/CLI@v1
         with:
           # login to the ACR using the login we just did above.
           # this will perform a 'docker login' with the identity-token-based credential from that Azure identity
           inlineScript: |
-            az acr login --name sdkcontainerdemo
+            echo "DOCKER_TOKEN=$(az acr login --name sdkcontainerdemo --expose-token --output tsv --query accessToken)" >> $GITHUB_ENV
+
+      - name: Log in to container registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: sdkcontainerdemo.azurecr.io
+          username: "00000000-0000-0000-0000-000000000000"
+          password: ${{ env.DOCKER_TOKEN }}
 
       - uses: ./.github/actions/publishAndLog
         with:
