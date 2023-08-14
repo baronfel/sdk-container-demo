@@ -98,9 +98,7 @@ jobs:
 
       - uses: Azure/login@v1
         with:
-          client-id: ${{ secrets.AZURE_MANAGED_IDENTITY_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          creds: '{"clientId":"${{ secrets.AZURE_MANAGED_IDENTITY_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_MANAGED_IDENTITY_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
 
       - uses: azure/CLI@v1
         with:
