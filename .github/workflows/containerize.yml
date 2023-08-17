@@ -333,7 +333,8 @@ jobs:
   harbor:
     name: Push to Harbor
     runs-on: ubuntu-latest
-    continue-on-error: true
+    # harbor is disabled because we don't have a persistent account/location to push to
+    if: false
     steps:
       - uses: actions/checkout@v3
 
