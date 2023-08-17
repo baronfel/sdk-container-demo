@@ -20,11 +20,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dotnet.ReproducibleBuilds" Version="1.1.1">
-      <IncludeAssets>build; buildtransitive</IncludeAssets>
-      <PrivateAssets>build; buildtransitive</PrivateAssets>
-      <ExcludeAssets>runtime;</ExcludeAssets>
-    </PackageReference>
    <PackageReference Include="Microsoft.Net.Build.Containers" Version="$(SdkContainerSupportPackageVersion)" />
   </ItemGroup>
 
