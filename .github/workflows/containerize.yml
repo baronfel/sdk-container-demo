@@ -30,28 +30,6 @@ jobs:
           profile: azure
           variant: admin-credential
 
-
-  azure-token-credentials:
-    name: Azure Container Registry - token credentials
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v2
-
-      - name: Log in to container registry
-        uses: azure/docker-login@v1
-        with:
-          login-server: sdkcontainerdemo.azurecr.io
-          username: sdk-container-demo-token
-          password: ${{ secrets.ACR_TOKEN_PASSWORD }}
-
-      - uses: ./.github/actions/publishAndLog
-        with:
-          profile: azure
-          variant: token-credential
-
   azure-ad-credentials:
     name: Azure Container Registry - AD OIDC credentials
     runs-on: ubuntu-latest
@@ -188,6 +166,8 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+        with:
+            mask-password: true
 
       - uses: ./.github/actions/publishAndLog
         with:
@@ -214,10 +194,12 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
         with:
           registry-type: public
+          mask-password: true
 
       - uses: ./.github/actions/publishAndLog
         with:
           profile: aws-public
+          chunked: false
 
   gitlab:
     name: GitLab Container Registry
@@ -249,7 +231,7 @@ jobs:
         uses: actions/setup-dotnet@v2
 
       # Setup gcloud CLI
-      - uses: google-github-actions/auth@main
+      - uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY }}
 
@@ -351,7 +333,8 @@ jobs:
   harbor:
     name: Push to Harbor
     runs-on: ubuntu-latest
-    continue-on-error: true
+    # harbor is disabled because we don't have a persistent account/location to push to
+    if: false
     steps:
       - uses: actions/checkout@v3
 

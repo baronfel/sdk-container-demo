@@ -107,7 +107,7 @@ $namespace=$(aws ecr-public describe-registries --region us-east-1 --output=json
 
 # publish the app to the public ECR with that namespace
 
-dotnet publish --os linux --arch x64 -p PublishProfile=aws-public -p ContainerImageName=$namespace/sdk-container-demo
+dotnet publish --os linux --arch x64 -p PublishProfile=aws-public -p ContainerRepository=$namespace/sdk-container-demo
 ```
 
 ### Azure (using managed identity)
@@ -210,7 +210,7 @@ Then, publish the app:
 
 ```bash
 # Note the GitHub username is required (since there's no 'namespacing' in the registry URL)
-dotnet publish --os linux --arch x64 -p PublishProfile=github -p ContainerImageName=<github_username>/sdk-container-demo
+dotnet publish --os linux --arch x64 -p PublishProfile=github -p ContainerRepository=<github_username>/sdk-container-demo
 ```
 
 ### Docker Hub
@@ -226,6 +226,6 @@ docker login -u <docker_hub_username> -p <personal_access_token>
 Then, publish the app:
 
 ```bash
-dotnet publish --os linux --arch x64 -p PublishProfile=dockerhub -p ContainerImageName=<docker_hub_username>/sdk-container-demo
+dotnet publish --os linux --arch x64 -p PublishProfile=dockerhub -p ContainerRepository=<docker_hub_username>/sdk-container-demo
 ```
 
