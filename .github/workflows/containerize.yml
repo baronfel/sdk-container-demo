@@ -166,6 +166,8 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+        with:
+            mask-password: true
 
       - uses: ./.github/actions/publishAndLog
         with:
@@ -192,6 +194,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
         with:
           registry-type: public
+          mask-password: true
 
       - uses: ./.github/actions/publishAndLog
         with:
@@ -227,7 +230,7 @@ jobs:
         uses: actions/setup-dotnet@v2
 
       # Setup gcloud CLI
-      - uses: google-github-actions/auth@main
+      - uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY }}
 
