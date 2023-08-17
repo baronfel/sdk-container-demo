@@ -199,6 +199,7 @@ jobs:
       - uses: ./.github/actions/publishAndLog
         with:
           profile: aws-public
+          chunked: false
 
   gitlab:
     name: GitLab Container Registry
