@@ -259,6 +259,9 @@ jobs:
       - name: List images
         run: docker image list --all
 
+      - name: List images (podman)
+        run: podman image list --all
+
   localdocker-trimmedandchiseled:
     name: Local Docker Daemon, Chiseled Ubuntu container
     runs-on: ubuntu-latest
@@ -277,6 +280,8 @@ jobs:
       - name: List images
         run: docker image list --all
 
+      - name: List images (podman)
+        run: podman image list --all
 
   localpodman:
       name: Local Podman installation
