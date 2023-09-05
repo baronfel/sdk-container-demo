@@ -261,6 +261,29 @@ jobs:
 
       - name: List images (podman)
         run: podman image list --all
+  
+  localdocker-archive:
+    name: Local Docker Daemon
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+
+      - uses: ./.github/actions/publishAndLog
+        with:
+          profile: localdocker-archive
+
+      - name: List images
+        run: docker image list --all
+
+      - name: List images (podman)
+        run: podman image list --all
+      
+      - name: load archive
+        run: docker load --input ./containerimages/*.tar.gz
+
 
   localdocker-trimmedandchiseled:
     name: Local Docker Daemon, Chiseled Ubuntu container
