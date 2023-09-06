@@ -282,7 +282,7 @@ jobs:
         run: podman image list --all
       
       - name: load archive
-        run: docker load --input ./containerimages/*.tar.gz
+        run: docker load --input ./containerimages/**/*.tar.gz
 
 
   localdocker-trimmedandchiseled:
