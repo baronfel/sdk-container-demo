@@ -1,22 +1,25 @@
-name: 'Hello World'
-description: 'Greet someone'
+name: "Publish container"
+description: "Publish a project as a container and capture binlogs"
 inputs:
-    profile:
-      required: true
-      description: "The name of the publish profile to use. Must match the name (without extension) of a publish profile in the Properties/PublishProfiles folder of the project."
-    variant:
-      required: false
-      default: "default"
-      description: "The 'variant' of the build to be run - this is used when testing different auth modes for the same publish profile, for example."
-    selfContained:
-      default: "[true, false]"
-      required: false
-      description: "The values of self-contained to test this variant with. Some variants don't work with SC/FDD builds, so use this to control which ones are tested. Valid values are 'true', 'false', or '[true, false]' to test both."
-    chunked:
-      default: "[true, false]"
-      required: false
-      description: "Determines if the upload will be done with chunked or atomic uploads. Defaults to testing both. Values are 'true', 'false', or '[true, false]' to test both."
-
+  profile:
+    required: true
+    description: "The name of the publish profile to use. Must match the name (without extension) of a publish profile in the Properties/PublishProfiles folder of the project."
+  variant:
+    required: false
+    default: "default"
+    description: "The 'variant' of the build to be run - this is used when testing different auth modes for the same publish profile, for example."
+  selfContained:
+    default: "[true, false]"
+    required: false
+    description: "The values of self-contained to test this variant with. Some variants don't work with SC/FDD builds, so use this to control which ones are tested. Valid values are 'true', 'false', or '[true, false]' to test both."
+  chunked:
+    default: "[true, false]"
+    required: false
+    description: "Determines if the upload will be done with chunked or atomic uploads. Defaults to testing both. Values are 'true', 'false', or '[true, false]' to test both."
+  cwd:
+    default: "src/sdk-container-demo"
+    required: false
+    description: "The working directory to run the publish command from. Defaults to src/sdk-container-demo."
 runs:
   using: "composite"
   steps:
@@ -25,57 +28,61 @@ runs:
       if: contains(fromJson(inputs.selfContained), true) && contains(fromJson(inputs.chunked), false)
       continue-on-error: true
       run: dotnet publish -p PublishProfile=${{ inputs.profile }} --self-contained true -p ContainerImageTags='"${{ inputs.variant }}-sc-atomic;latest-sc-atomic"' /bl
+      working-directory: ${{ inputs.cwd }}
       env:
-        SDK_CONTAINER_DEBUG_REGISTRY_FORCE_CHUNKED_UPLOAD: 'false'
+        SDK_CONTAINER_DEBUG_REGISTRY_FORCE_CHUNKED_UPLOAD: "false"
 
     - name: Archive binlog self-contained, atomic
       uses: actions/upload-artifact@v3
       if: contains(fromJson(inputs.selfContained), true) && contains(fromJson(inputs.chunked), false)
       with:
-          name: ${{ inputs.profile}}-${{ inputs.variant }}-sc-atomic.binlog
-          path: msbuild.binlog
+        name: ${{ inputs.profile}}-${{ inputs.variant }}-sc-atomic.binlog
+        path: ${{ inputs.cwd}}/msbuild.binlog
 
     - name: Publish framework dependent, atomic
       shell: bash
       continue-on-error: true
-      if:  contains(fromJson(inputs.selfContained), false) && contains(fromJson(inputs.chunked), false)
+      if: contains(fromJson(inputs.selfContained), false) && contains(fromJson(inputs.chunked), false)
       run: dotnet publish -p PublishProfile=${{ inputs.profile }} --self-contained false -p ContainerImageTags='"${{ inputs.variant }}-fdd-atomic;latest-fdd-atomic"' /bl
+      working-directory: ${{ inputs.cwd }}
       env:
-        SDK_CONTAINER_DEBUG_REGISTRY_FORCE_CHUNKED_UPLOAD: 'false'
+        SDK_CONTAINER_DEBUG_REGISTRY_FORCE_CHUNKED_UPLOAD: "false"
 
     - name: Archive binlog self-contained, atomic
       uses: actions/upload-artifact@v3
       if: contains(fromJson(inputs.selfContained), false) && contains(fromJson(inputs.chunked), false)
       with:
-          name: ${{ inputs.profile}}-${{ inputs.variant }}-fdd-atomic.binlog
-          path: msbuild.binlog
+        name: ${{ inputs.profile}}-${{ inputs.variant }}-fdd-atomic.binlog
+        path: ${{ inputs.cwd}}/msbuild.binlog
 
     - name: Publish self contained, chunked
       shell: bash
       continue-on-error: true
       if: contains(fromJson(inputs.selfContained), true) && contains(fromJson(inputs.chunked), true)
       run: dotnet publish -p PublishProfile=${{ inputs.profile }} --self-contained true -p ContainerImageTags='"${{ inputs.variant }}-sc-chunked;latest-sc-chunked"' /bl
+      working-directory: ${{ inputs.cwd }}
       env:
-        SDK_CONTAINER_DEBUG_REGISTRY_FORCE_CHUNKED_UPLOAD: 'true'
+        SDK_CONTAINER_DEBUG_REGISTRY_FORCE_CHUNKED_UPLOAD: "true"
 
     - name: Archive binlog self-contained, chunked
       uses: actions/upload-artifact@v3
       if: contains(fromJson(inputs.selfContained), true) && contains(fromJson(inputs.chunked), true)
       with:
-          name: ${{ inputs.profile}}-${{ inputs.variant }}-sc-chunked.binlog
-          path: msbuild.binlog
+        name: ${{ inputs.profile}}-${{ inputs.variant }}-sc-chunked.binlog
+        path: ${{ inputs.cwd}}/msbuild.binlog
 
     - name: Publish framework dependent, chunked
       shell: bash
       continue-on-error: true
       if: contains(fromJson(inputs.selfContained), false) && contains(fromJson(inputs.chunked), true)
       run: dotnet publish -p PublishProfile=${{ inputs.profile }} --self-contained false -p ContainerImageTags='"${{ inputs.variant }}-fdd-chunked;latest-fdd-chunked' /bl
+      working-directory: ${{ inputs.cwd }}
       env:
-        SDK_CONTAINER_DEBUG_REGISTRY_FORCE_CHUNKED_UPLOAD: 'true'
+        SDK_CONTAINER_DEBUG_REGISTRY_FORCE_CHUNKED_UPLOAD: "true"
 
     - name: Archive binlog self-contained, chunked
       uses: actions/upload-artifact@v3
       if: contains(fromJson(inputs.selfContained), false) && contains(fromJson(inputs.chunked), true)
       with:
-          name: ${{ inputs.profile}}-${{ inputs.variant }}-fdd-chunked.binlog
-          path: msbuild.binlog
+        name: ${{ inputs.profile}}-${{ inputs.variant }}-fdd-chunked.binlog
+        path: ${{ inputs.cwd}}/msbuild.binlog

@@ -373,13 +373,13 @@ jobs:
       - name: publish self-contained
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./src/sdk-container-demo
           tags: chusk3/net-sdk-container-demo:dockerfile
-          file: ./Dockerfile-sc
+          file: ./src/sdk-container-demo/Dockerfile-sc
 
       - name: publish framework-dependent
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./src/sdk-container-demo
           tags: chusk3/net-sdk-container-demo:dockerfile
-          file: ./Dockerfile-fdd
+          file: ./src/sdk-container-demo/Dockerfile-fdd
