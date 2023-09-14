@@ -1,17 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>sdk_container_demo</RootNamespace>
     <SelfContained>false</SelfContained>
-    <EnableSdkContainerSupport>false</EnableSdkContainerSupport>
-    <SdkContainerSupportPackageVersion>8.0.100-dev</SdkContainerSupportPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Packaging properties">
-    <Description>A project that demonstrates publishing to various container registries using just the .NET SDK</Description>
+    <Description>A project that demonstrates publishing to various container registries using just
+      the .NET SDK</Description>
     <Authors>Chet Husk</Authors>
     <PackageProjectUrl>https://github.com/baronfel/sdk-container-demo</PackageProjectUrl>
     <PackageDocumentationUrl>https://github.com/baronfel/sdk-container-demo/blob/main/README.md</PackageDocumentationUrl>
@@ -19,19 +18,22 @@
     <Title>.NET SDK 7 Container Demo</Title>
   </PropertyGroup>
 
-  <ItemGroup>
-   <PackageReference Include="Microsoft.Net.Build.Containers" Version="$(SdkContainerSupportPackageVersion)" />
-  </ItemGroup>
-
   <!-- Example of how you could push the same image to multiple registries via a single target-->
 
   <ItemGroup>
     <DestinationRegistry Include="sdk-container-demo.azurecr.io" />
     <DestinationRegistry Include="ghcr.io" />
-    <SingleRegistryPublish Include="$(MSBuildProjectFullPath)" AdditionalProperties="ContainerRegistry=%(DestinationRegistry)" />
+    <SingleRegistryPublish
+        Include="$(MSBuildProjectFullPath)"
+        AdditionalProperties="ContainerRegistry=%(DestinationRegistry)" />
   </ItemGroup>
 
-  <Target Name="MultiPush" DependsOnTargets="Publish">
-    <MSBuild Projects="@(SingleRegistryPublish)" Targets="PublishContainer" BuildInParallel="true" />
+  <Target
+      Name="MultiPush"
+      DependsOnTargets="Publish">
+    <MSBuild
+        Projects="@(SingleRegistryPublish)"
+        Targets="PublishContainer"
+        BuildInParallel="true" />
   </Target>
 </Project>

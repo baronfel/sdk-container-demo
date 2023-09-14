@@ -6,7 +6,7 @@
     <RootNamespace>aot_sample</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <PublishAot>true</PublishAot>
+    <!-- <PublishAot>true</PublishAot> -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Build.Containers" Version="8.0.100-rc.1.23455.21" />
+    <PackageReference
+        Include="Microsoft.NET.Build.Containers"
+        Version="8.0.100-rc.1.23455.21" />
   </ItemGroup>
 
 </Project>
