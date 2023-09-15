@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>sdk_container_demo</RootNamespace>
     <SelfContained>false</SelfContained>
+    <UseLocalPackage>true</UseLocalPackage> <!-- Disable this property when you want to fall back to
+    the SDK built-in logic -->
   </PropertyGroup>
 
   <PropertyGroup Label="Packaging properties">
@@ -27,6 +29,15 @@
         Include="$(MSBuildProjectFullPath)"
         AdditionalProperties="ContainerRegistry=%(DestinationRegistry)" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(UseLocalPackage)' == 'true'">
+    <PackageReference
+        Include="Microsoft.NET.Build.Containers"
+        Version="8.0.100-dev" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(UseLocalPackage)' == 'true'">
+    <EnableSdkContainerSupport>false</EnableSdkContainerSupport>
+  </PropertyGroup>
 
   <Target
       Name="MultiPush"
