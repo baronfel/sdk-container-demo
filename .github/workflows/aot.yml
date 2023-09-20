@@ -20,7 +20,7 @@ jobs:
     - name: build the app AOT-style
       run: |
         docker run --rm \
-        -v /src:/src \
+        -v $(pwd)/src:/src \
         -v /var/run/docker.sock:/var/run/docker.sock \
         -v /usr/bin/docker:/usr/bin/docker \
         -w /src/aot-sample \
