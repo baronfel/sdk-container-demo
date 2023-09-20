@@ -21,8 +21,14 @@ jobs:
     - name: Get the code
       uses: actions/checkout@v2
     - name: build the app AOT-style
-      working-directory: ./src/aot-sample
-      run:
+      working-directory: src/aot-sample
+      run: |
         dotnet publish /t:PublishContainer \
-          /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine-extra
-          -bl -r linux-musl-x64
+          /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine-extra \
+          --use-current-runtime
+          -bl
+    - name: Upload binlog
+      uses: actions/upload-artifact@v3
+      with:
+          path: src/aot-sample/msbuild.binlog
+          name: msbuild.binlog
