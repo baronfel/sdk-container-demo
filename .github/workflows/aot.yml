@@ -19,7 +19,7 @@ jobs:
       run: ls -la
     - name: build the app AOT-style
       run: |
-        docker run --rm -it \
+        docker run --rm \
         -v /src:/src \
         -v /var/run/docker.sock:/var/run/docker.sock \
         -v /usr/bin/docker:/usr/bin/docker \
