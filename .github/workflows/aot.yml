@@ -20,6 +20,8 @@ jobs:
     steps:
     - name: Get the code
       uses: actions/checkout@v2
+    - name: diagnose paths
+      run: ls -la
     - name: build the app AOT-style
       working-directory: src/aot-sample
       run: |
