@@ -28,11 +28,12 @@ jobs:
           mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot \
           sh -c "
             apk add docker && \
-            ls -la && \
             cd ./src/aot-sample && \
-            dotnet --info && \
             dotnet publish /t:PublishContainer /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine-extra --use-current-runtime -bl \
           "
+    - name: run the just-built container
+      run: |
+          docker run --rm aot-sample:latest
     - name: Upload binlog
       uses: actions/upload-artifact@v3
       with:
