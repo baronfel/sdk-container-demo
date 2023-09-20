@@ -6,7 +6,7 @@
     <RootNamespace>aot_sample</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <!-- <PublishAot>true</PublishAot> -->
+    <PublishAot>true</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>

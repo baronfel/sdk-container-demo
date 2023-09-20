@@ -1,0 +1,28 @@
+name: AOT Example
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  GITHUB_USERNAME: baronfel
+  GITHUB_TOKEN: ${{ secrets.CONTAINER_PUSH_PAT }}
+
+jobs:
+  aot:
+    name: "Build AOT Console App"
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - /usr/bin/docker:/usr/bin/docker
+    steps:
+    - name: Get the code
+      uses: actions/checkout@v2
+    - name: build the app AOT-style
+      working-directory: ./src/aot-sample
+      run:
+        dotnet publish /t:PublishContainer \
+          /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine-extra
+          -bl -r linux-musl-x64
