@@ -29,6 +29,9 @@ jobs:
     - name: run the just-built container
       run: |
           docker run --rm aot-sample:latest
+    - name: inspect the just-built container
+      run: |
+        docker history aot-sample:latest --format "{{.ID}}: {{.Size}}"
     - name: Upload binlog
       uses: actions/upload-artifact@v3
       with:
