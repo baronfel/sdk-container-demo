@@ -12,25 +12,23 @@ jobs:
   aot:
     name: "Build AOT Console App"
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-        - /usr/bin/docker:/usr/bin/docker
     steps:
     - name: Get the code
       uses: actions/checkout@v2
     - name: diagnose paths
       run: ls -la
     - name: build the app AOT-style
-      working-directory: src/aot-sample
-      run: |
-        dotnet publish /t:PublishContainer \
-          /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine-extra \
-          --use-current-runtime
-          -bl
-    - name: Upload binlog
-      uses: actions/upload-artifact@v3
+      uses: addnab/docker-run-action@v3
       with:
-          path: src/aot-sample/msbuild.binlog
-          name: msbuild.binlog
+        image: mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot
+        options: -w src/aot-sample -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker
+        run: |
+          dotnet publish /t:PublishContainer \
+            /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine-extra \
+            --use-current-runtime
+            -bl
+    # - name: Upload binlog
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #       path: src/aot-sample/msbuild.binlog
+    #       name: msbuild.binlog
