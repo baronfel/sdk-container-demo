@@ -22,7 +22,7 @@ jobs:
         -v /var/run/docker.sock:/var/run/docker.sock \
         -w /src/aot-sample \
         mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot \
-        apk add docker && rm /dotnet publish /t:PublishContainer \
+        apk add docker && dotnet publish /t:PublishContainer \
           /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine-extra \
           --use-current-runtime \
           -bl
