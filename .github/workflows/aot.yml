@@ -15,26 +15,26 @@ jobs:
     steps:
     - name: Get the code
       uses: actions/checkout@v2
-    - name: diagnose paths
-      run: ls -la
+    - name: diagnose docker
+      run: echo $(which docker)
+    - name: diagnose docekr socket
+      run: ls /var/run/docker.sock
     - name: check prereqs
       run: |
         docker run --rm \
         -v $(pwd)/src:/src \
         -v /var/run/docker.sock:/var/run/docker.sock \
-        -v /usr/bin/docker:/usr/bin/docker \
         -w /src/aot-sample \
         mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot \
-        docker --info
+        apk add docker && docker info
     - name: build the app AOT-style
       run: |
         docker run --rm \
         -v $(pwd)/src:/src \
         -v /var/run/docker.sock:/var/run/docker.sock \
-        -v /usr/bin/docker:/usr/bin/docker \
         -w /src/aot-sample \
         mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot \
-        dotnet publish /t:PublishContainer \
+        apk add docker && dotnet publish /t:PublishContainer \
           /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine-extra \
           --use-current-runtime
           -bl
