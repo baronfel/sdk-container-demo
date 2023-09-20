@@ -17,6 +17,15 @@ jobs:
       uses: actions/checkout@v2
     - name: diagnose paths
       run: ls -la
+    - name: check prereqs
+      run: |
+        docker run --rm \
+        -v $(pwd)/src:/src \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        -v /usr/bin/docker:/usr/bin/docker \
+        -w /src/aot-sample \
+        mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot \
+        docker --info
     - name: build the app AOT-style
       run: |
         docker run --rm \
