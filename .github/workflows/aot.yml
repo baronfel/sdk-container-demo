@@ -15,14 +15,20 @@ jobs:
     steps:
     - name: Get the code
       uses: actions/checkout@v2
+    - name: get .NET info
+      run: |
+        docker run --rm --pull=always \
+          mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot \
+          dotnet --info
     - name: build the app AOT-style
       run: |
-        docker run --rm \
-        -v $(pwd)/src:/src \
-        -v /var/run/docker.sock:/var/run/docker.sock \
-        -w /src/aot-sample \
-        mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot \
-        apk add docker && dotnet publish /t:PublishContainer \
+        docker run --rm --pull=always \
+          -v $(pwd)/src:/src \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -w /src/aot-sample \
+          mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot \
+          apk add docker && \
+          dotnet publish /t:PublishContainer \
           /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine-extra \
           --use-current-runtime \
           -bl
