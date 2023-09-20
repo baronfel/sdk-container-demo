@@ -18,17 +18,18 @@ jobs:
     - name: diagnose paths
       run: ls -la
     - name: build the app AOT-style
-      uses: addnab/docker-run-action@v3
+      run: |
+        docker run --rm -it \
+        -v /src:/src \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        -v /usr/bin/docker:/usr/bin/docker \
+        -w /src/aot-sample \
+        dotnet publish /t:PublishContainer \
+          /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine-extra \
+          --use-current-runtime
+          -bl
+    - name: Upload binlog
+      uses: actions/upload-artifact@v3
       with:
-        image: mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot
-        options: -w src/aot-sample -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker
-        run: |
-          dotnet publish /t:PublishContainer \
-            /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine-extra \
-            --use-current-runtime
-            -bl
-    # - name: Upload binlog
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #       path: src/aot-sample/msbuild.binlog
-    #       name: msbuild.binlog
+          path: src/aot-sample/msbuild.binlog
+          name: msbuild.binlog
