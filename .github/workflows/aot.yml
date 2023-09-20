@@ -24,13 +24,13 @@ jobs:
           sh -c "
             apk add docker && \
             cd ./src/aot-sample && \
-            dotnet publish /t:PublishContainer /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine-extra --use-current-runtime -bl \
+            dotnet publish /t:PublishContainer /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine --use-current-runtime -bl \
           "
     - name: run the just-built container
       run: |
           docker run --rm aot-sample:latest
     - name: inspect the just-built container
-      run: |
+      run: | 
         docker history aot-sample:latest --format "{{.ID}}: {{.Size}}"
     - name: Upload binlog
       uses: actions/upload-artifact@v3
