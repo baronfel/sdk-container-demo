@@ -15,18 +15,6 @@ jobs:
     steps:
     - name: Get the code
       uses: actions/checkout@v2
-    - name: diagnose docker
-      run: echo $(which docker)
-    - name: diagnose docekr socket
-      run: ls /var/run/docker.sock
-    - name: check prereqs
-      run: |
-        docker run --rm \
-        -v $(pwd)/src:/src \
-        -v /var/run/docker.sock:/var/run/docker.sock \
-        -w /src/aot-sample \
-        mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot \
-        apk add docker && docker info
     - name: build the app AOT-style
       run: |
         docker run --rm \
@@ -34,9 +22,9 @@ jobs:
         -v /var/run/docker.sock:/var/run/docker.sock \
         -w /src/aot-sample \
         mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot \
-        apk add docker && dotnet publish /t:PublishContainer \
+        apk add docker && rm /dotnet publish /t:PublishContainer \
           /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine-extra \
-          --use-current-runtime
+          --use-current-runtime \
           -bl
     - name: Upload binlog
       uses: actions/upload-artifact@v3
