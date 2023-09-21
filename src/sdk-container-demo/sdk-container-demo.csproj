@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>sdk_container_demo</RootNamespace>
     <SelfContained>false</SelfContained>
+    <EnableSdkContainerSupport>false</EnableSdkContainerSupport>
   </PropertyGroup>
 
   <PropertyGroup Label="Packaging properties">
@@ -17,6 +18,12 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Title>.NET SDK 7 Container Demo</Title>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference
+        Include="Microsoft.NET.Build.Containers"
+        Version="8.0.100-dev" />
+  </ItemGroup>
 
   <!-- Example of how you could push the same image to multiple registries via a single target-->
 
