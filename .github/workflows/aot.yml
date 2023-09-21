@@ -8,9 +8,27 @@ env:
   GITHUB_USERNAME: baronfel
   GITHUB_TOKEN: ${{ secrets.CONTAINER_PUSH_PAT }}
 
+
+
 jobs:
   aot:
-    name: "Build AOT Console App"
+    strategy:
+      matrix:
+        include:
+        - sdkflavor: jammy-aot
+          runtimeflavor: jammy-chiseled
+          arch: arm64v8
+        - sdkflavor: jammy-aot
+          runtimeflavor: jammy-chiseled
+          arch: amd64
+        - sdkflavor: alpine-aot
+          runtimeflavor: alpine
+          arch: arm64v8
+        - sdkflavor: alpine-aot
+          runtimeflavor: alpine
+          arch: amd64
+
+    name: "Build AOT Console App for ${{ matrix.sdkflavor }}-${{ matrix.arch }} to ${{ matrix.runtimeflavor }}-${{ matrix.arch }}"
     runs-on: ubuntu-latest
     steps:
     - name: Get the code
@@ -20,20 +38,17 @@ jobs:
         docker run --rm --pull=always \
           -v $(pwd)/src:/src \
           -v /var/run/docker.sock:/var/run/docker.sock \
-          mcr.microsoft.com/dotnet/nightly/sdk:8.0-alpine-aot \
+          -w /src/aot-sample \
+          mcr.microsoft.com/dotnet/nightly/sdk:8.0-${{ matrix.sdkflavor }}-${{matrix.arch}} \
           sh -c "
             apk add docker && \
-            cd ./src/aot-sample && \
-            dotnet publish /t:PublishContainer /p:ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine --use-current-runtime -bl \
+            dotnet publish /t:PublishContainer \
+              -p ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-${{matrix.runtimeflavor}}-${{matrix.arch}} \
+              -p ContainerImageTag=${{matrix.runtimeflavor}}-${{matrix.arch}} \
           "
     - name: run the just-built container
       run: |
-          docker run --rm aot-sample:latest
+          docker run --rm aot-sample:${{matrix.runtimeflavor}}-${{matrix.arch}}
     - name: inspect the just-built container
       run: | 
-        docker history aot-sample:latest --format "{{.ID}}: {{.Size}}"
-    - name: Upload binlog
-      uses: actions/upload-artifact@v3
-      with:
-          path: src/aot-sample/msbuild.binlog
-          name: msbuild.binlog
+        docker history aot-sample:${{matrix.runtimeflavor}}-${{matrix.arch}} --format "{{.ID}}: {{.Size}}"
