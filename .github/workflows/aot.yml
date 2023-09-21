@@ -17,13 +17,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdkflavor: [alpine-aot, jammy-aot]
+        sdkflavor: [jammy-aot]
         arch: [amd64, arm64v8]
         include:
+        # jammy can do both architectures, so the same metadata can be applied to both architectures
         - sdkflavor: jammy-aot
           runtimeflavor: jammy-chiseled
-        - sdkflavor: alpine-aot
+        # alpine doesn't support cross-architecture, so need to fully specify each of those jobs
+        - sdkflavor: alpine-aot-amd64
           runtimeflavor: alpine
+          arch: amd64
+        - sdkflavor: alpine-aot-arm64v8
+          runtimeflavor: alpine
+          arch: arm64v8
 
     name: "${{ matrix.sdkflavor }}-${{ matrix.arch }} => ${{ matrix.runtimeflavor }}-${{ matrix.arch }}"
     runs-on: ubuntu-latest
@@ -34,14 +40,6 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Set up Docker Buildx
-      if: matrix.arch != 'amd64'
-      uses: docker/setup-buildx-action@v2
-    - name: Set up QEMU
-      if: matrix.arch != 'amd64'
-      uses: docker/setup-qemu-action@v2
-      with:
-        platforms: 'arm64,arm'
     - name: Get the code
       uses: actions/checkout@v2
     - name: build the app AOT-style
@@ -50,7 +48,7 @@ jobs:
           -v $(pwd)/src:/src \
           -v ~/.docker/config.json:/root/.docker/config.json:ro \
           -w /src/aot-sample \
-          mcr.microsoft.com/dotnet/nightly/sdk:8.0-${{ matrix.sdkflavor }}-${{matrix.arch}} \
+          mcr.microsoft.com/dotnet/nightly/sdk:8.0-${{ matrix.sdkflavor }} \
           sh -c "
             dotnet publish /t:PublishContainer \
               -p ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-${{matrix.runtimeflavor}}-${{matrix.arch}} \
