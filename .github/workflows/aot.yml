@@ -18,13 +18,13 @@ jobs:
         arch: [amd64, arm64v8]
         include:
         - sdkflavor: jammy-aot
-          installcommand: apt install docker-ce
+          installcommand: apt update && apt install docker-ce
           runtimeflavor: jammy-chiseled
         - sdkflavor: alpine-aot
           runtimeflavor: alpine
           installcommand: apk add docker
 
-    name: "Build AOT Console App for ${{ matrix.sdkflavor }}-${{ matrix.arch }} to ${{ matrix.runtimeflavor }}-${{ matrix.arch }}"
+    name: "${{ matrix.sdkflavor }}-${{ matrix.arch }} => ${{ matrix.runtimeflavor }}-${{ matrix.arch }}"
     runs-on: ubuntu-latest
     steps:
     - name: Set up Docker Buildx
