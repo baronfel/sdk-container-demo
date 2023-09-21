@@ -62,5 +62,30 @@ jobs:
       run: |
           docker run --rm ghcr.io/${{github.repository_owner}}/aot-sample:${{matrix.runtimeflavor}}-${{matrix.arch}}
     - name: inspect the just-built container
-      run: | 
+      run: |
         docker history ghcr.io/${{github.repository_owner}}/aot-sample:${{matrix.runtimeflavor}}-${{matrix.arch}} --format "{{.ID}}: {{.Size}}"
+
+  create-manifest-list:
+    name: Create Manifest List for aot-sample
+    needs: [aot]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - name: Login to ghcr.io
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: create manifest
+      run: |
+        docker manifest create ghcr.io/${{github.repository_owner}}/aot-sample:latest \
+          ghcr.io/${{github.repository_owner}}/aot-sample:jammy-chiseled-amd64 \
+          ghcr.io/${{github.repository_owner}}/aot-sample:jammy-chiseled-arm64v8 \
+          ghcr.io/${{github.repository_owner}}/aot-sample:alpine-amd64 \
+          ghcr.io/${{github.repository_owner}}/aot-sample:alpine-arm64v8
+
+        docker push ghcr.io/${{github.repository_owner}}/aot-sample:latest
