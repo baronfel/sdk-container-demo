@@ -14,23 +14,27 @@ jobs:
   aot:
     strategy:
       matrix:
+        sdkflavor: [alpine-aot, jammy-aot]
+        arch: [amd64, arm64v8]
         include:
         - sdkflavor: jammy-aot
+          installcommand: apt install docker-ce
           runtimeflavor: jammy-chiseled
-          arch: arm64v8
-        - sdkflavor: jammy-aot
-          runtimeflavor: jammy-chiseled
-          arch: amd64
         - sdkflavor: alpine-aot
           runtimeflavor: alpine
-          arch: arm64v8
-        - sdkflavor: alpine-aot
-          runtimeflavor: alpine
-          arch: amd64
+          installcommand: apk add docker
 
     name: "Build AOT Console App for ${{ matrix.sdkflavor }}-${{ matrix.arch }} to ${{ matrix.runtimeflavor }}-${{ matrix.arch }}"
     runs-on: ubuntu-latest
     steps:
+    - name: Set up Docker Buildx
+      if: matrix.arch != 'amd64'
+      uses: docker/setup-buildx-action@v2
+    - name: Set up QEMU
+      if: matrix.arch != 'amd64'
+      uses: docker/setup-qemu-action@v2
+      with:
+        platforms: 'arm64,arm'
     - name: Get the code
       uses: actions/checkout@v2
     - name: build the app AOT-style
@@ -41,7 +45,7 @@ jobs:
           -w /src/aot-sample \
           mcr.microsoft.com/dotnet/nightly/sdk:8.0-${{ matrix.sdkflavor }}-${{matrix.arch}} \
           sh -c "
-            apk add docker && \
+            ${{matrix.installcommand}} && \
             dotnet publish /t:PublishContainer \
               -p ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-${{matrix.runtimeflavor}}-${{matrix.arch}} \
               -p ContainerImageTag=${{matrix.runtimeflavor}}-${{matrix.arch}} \
