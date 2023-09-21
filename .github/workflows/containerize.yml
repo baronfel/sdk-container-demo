@@ -276,7 +276,7 @@ jobs:
           profile: localdocker
           variant: trimmedandchiseled
           selfContained: "true"
-      
+
       - name: List images
         run: docker image list --all
 
@@ -383,3 +383,23 @@ jobs:
           context: ./src/sdk-container-demo
           tags: chusk3/net-sdk-container-demo:dockerfile
           file: ./src/sdk-container-demo/Dockerfile-fdd
+
+  oci-base-image:
+    name: Test with OCI base image instead of Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+
+      - name: Log in to container registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ghcr.io
+          username: baronfel
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: ./.github/actions/publishAndLog
+        with:
+          profile: oci-base-image
