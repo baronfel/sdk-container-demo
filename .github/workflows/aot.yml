@@ -29,7 +29,7 @@ jobs:
           arch: amd64
         - sdkflavor: alpine-aot-arm64v8
           runtimeflavor: alpine
-          arch: arm64v8
+          arch: arm64
 
     name: "${{ matrix.sdkflavor }} => ${{ matrix.runtimeflavor }}-${{ matrix.arch }}"
     runs-on: ubuntu-latest
