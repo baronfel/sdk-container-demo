@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         sdkflavor: [jammy-aot]
-        arch: [amd64, arm64v8]
+        arch: [amd64, arm64]
         include:
         # jammy can do both architectures, so the same metadata can be applied to both architectures
         - sdkflavor: jammy-aot
@@ -83,8 +83,8 @@ jobs:
       run: |
         docker manifest create ghcr.io/${{github.repository_owner}}/aot-sample:latest \
           ghcr.io/${{github.repository_owner}}/aot-sample:jammy-chiseled-amd64 \
-          ghcr.io/${{github.repository_owner}}/aot-sample:jammy-chiseled-arm64v8 \
+          ghcr.io/${{github.repository_owner}}/aot-sample:jammy-chiseled-arm64 \
           ghcr.io/${{github.repository_owner}}/aot-sample:alpine-amd64 \
-          ghcr.io/${{github.repository_owner}}/aot-sample:alpine-arm64v8
+          ghcr.io/${{github.repository_owner}}/aot-sample:alpine-arm64
 
         docker manifest push ghcr.io/${{github.repository_owner}}/aot-sample:latest
