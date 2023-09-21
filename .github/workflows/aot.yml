@@ -31,7 +31,7 @@ jobs:
           runtimeflavor: alpine
           arch: arm64v8
 
-    name: "${{ matrix.sdkflavor }}-${{ matrix.arch }} => ${{ matrix.runtimeflavor }}-${{ matrix.arch }}"
+    name: "${{ matrix.sdkflavor }} => ${{ matrix.runtimeflavor }}-${{ matrix.arch }}"
     runs-on: ubuntu-latest
     steps:
     - name: Login to ghcr.io
@@ -55,6 +55,7 @@ jobs:
               -p ContainerRegistry=ghcr.io \
               -p ContainerRepository=${{ github.repository_owner }}/aot-sample \
               -p ContainerImageTag=${{matrix.runtimeflavor}}-${{matrix.arch}} \
+              --arch ${{matrix.arch}} \
           "
     - name: run the just-built container
       run: |
