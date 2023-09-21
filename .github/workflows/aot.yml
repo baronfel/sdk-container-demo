@@ -6,27 +6,34 @@ on:
 
 env:
   GITHUB_USERNAME: baronfel
-  GITHUB_TOKEN: ${{ secrets.CONTAINER_PUSH_PAT }}
-
+  # GITHUB_TOKEN: ${{ secrets.CONTAINER_PUSH_PAT }}
 
 
 jobs:
   aot:
+    permissions:
+      contents: read
+      packages: write
     strategy:
+      fail-fast: false
       matrix:
         sdkflavor: [alpine-aot, jammy-aot]
         arch: [amd64, arm64v8]
         include:
         - sdkflavor: jammy-aot
-          installcommand: apt update && apt install docker-ce
           runtimeflavor: jammy-chiseled
         - sdkflavor: alpine-aot
           runtimeflavor: alpine
-          installcommand: apk add docker
 
     name: "${{ matrix.sdkflavor }}-${{ matrix.arch }} => ${{ matrix.runtimeflavor }}-${{ matrix.arch }}"
     runs-on: ubuntu-latest
     steps:
+    - name: Login to ghcr.io
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     - name: Set up Docker Buildx
       if: matrix.arch != 'amd64'
       uses: docker/setup-buildx-action@v2
@@ -41,18 +48,19 @@ jobs:
       run: |
         docker run --rm --pull=always \
           -v $(pwd)/src:/src \
-          -v /var/run/docker.sock:/var/run/docker.sock \
+          -v ~/.docker/config.json:/root/.docker/config.json:ro \
           -w /src/aot-sample \
           mcr.microsoft.com/dotnet/nightly/sdk:8.0-${{ matrix.sdkflavor }}-${{matrix.arch}} \
           sh -c "
-            ${{matrix.installcommand}} && \
             dotnet publish /t:PublishContainer \
               -p ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-${{matrix.runtimeflavor}}-${{matrix.arch}} \
+              -p ContainerRegistry=ghcr.io \
+              -p ContainerRepository=${{ github.repository_owner }}/aot-sample \
               -p ContainerImageTag=${{matrix.runtimeflavor}}-${{matrix.arch}} \
           "
     - name: run the just-built container
       run: |
-          docker run --rm aot-sample:${{matrix.runtimeflavor}}-${{matrix.arch}}
+          docker run --rm ghcr.io/${{github.repository_owner}}/aot-sample:${{matrix.runtimeflavor}}-${{matrix.arch}}
     - name: inspect the just-built container
       run: | 
-        docker history aot-sample:${{matrix.runtimeflavor}}-${{matrix.arch}} --format "{{.ID}}: {{.Size}}"
+        docker history ghcr.io/${{github.repository_owner}}/aot-sample:${{matrix.runtimeflavor}}-${{matrix.arch}} --format "{{.ID}}: {{.Size}}"
