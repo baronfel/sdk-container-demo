@@ -88,4 +88,4 @@ jobs:
           ghcr.io/${{github.repository_owner}}/aot-sample:alpine-amd64 \
           ghcr.io/${{github.repository_owner}}/aot-sample:alpine-arm64v8
 
-        docker push ghcr.io/${{github.repository_owner}}/aot-sample:latest
+        docker manifest push ghcr.io/${{github.repository_owner}}/aot-sample:latest
