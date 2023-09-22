@@ -55,7 +55,7 @@ jobs:
           sh -c "
             ${{matrix.installcommand}} && \
             dotnet publish /t:PublishContainer \
-              -p ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-${{matrix.runtimeflavor}}-${{matrix.arch}} \
+              -p ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-${{matrix.runtimeflavor}} \
               -p ContainerRegistry=ghcr.io \
               -p ContainerRepository=${{ github.repository_owner }}/aot-sample \
               -p ContainerImageTag=${{matrix.runtimeflavor}}-${{matrix.arch}} \
