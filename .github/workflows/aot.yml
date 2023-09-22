@@ -50,6 +50,8 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Get the code
       uses: actions/checkout@v2
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
     - name: build the app AOT-style
       run: |
         docker run --rm --pull=always \
