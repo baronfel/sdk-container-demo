@@ -60,7 +60,14 @@ jobs:
               -p ContainerRepository=${{ github.repository_owner }}/aot-sample \
               -p ContainerImageTag=${{matrix.runtimeflavor}}-${{matrix.arch}} \
               --arch ${{matrix.arch}} \
+              -bl \
           "
+    - name: upload binlog
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        path: src/aot-sample/msbuild.binlog
+        name: ${{matrix.runtimeflavor}}-${{matrix.arch}}.binlog
     - name: run the just-built container
       run: |
           docker run --rm ghcr.io/${{github.repository_owner}}/aot-sample:${{matrix.runtimeflavor}}-${{matrix.arch}}
