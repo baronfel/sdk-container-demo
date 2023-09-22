@@ -22,7 +22,12 @@ jobs:
         include:
         # jammy can do both architectures, so the same metadata can be applied to both architectures
         - sdkflavor: jammy-aot
-          runtimeflavor: jammy-chiseled
+          runtimeflavor: jammy-chiseled-amd64
+          installcommand: apt update && apt install llvm -y
+          arch: amd64
+        - sdkflavor: jammy-aot
+          runtimeflavor: jammy-chiseled-arm64v8
+          arch: arm64
           installcommand: apt update && apt install llvm -y
         # alpine doesn't support cross-architecture, so need to fully specify each of those jobs
         - sdkflavor: alpine-aot-amd64
