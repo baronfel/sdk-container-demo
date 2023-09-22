@@ -23,13 +23,16 @@ jobs:
         # jammy can do both architectures, so the same metadata can be applied to both architectures
         - sdkflavor: jammy-aot
           runtimeflavor: jammy-chiseled
+          installcommand: apt update && apt install llvm -y
         # alpine doesn't support cross-architecture, so need to fully specify each of those jobs
         - sdkflavor: alpine-aot-amd64
           runtimeflavor: alpine
           arch: amd64
+          installcommand: 'true'
         - sdkflavor: alpine-aot-arm64v8
           runtimeflavor: alpine
           arch: arm64
+          installcommand: 'true'
 
     name: "${{ matrix.sdkflavor }} => ${{ matrix.runtimeflavor }}-${{ matrix.arch }}"
     runs-on: ubuntu-latest
@@ -50,6 +53,7 @@ jobs:
           -w /src/aot-sample \
           mcr.microsoft.com/dotnet/nightly/sdk:8.0-${{ matrix.sdkflavor }} \
           sh -c "
+            ${{matrix.installcommand}} && \
             dotnet publish /t:PublishContainer \
               -p ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-${{matrix.runtimeflavor}}-${{matrix.arch}} \
               -p ContainerRegistry=ghcr.io \
