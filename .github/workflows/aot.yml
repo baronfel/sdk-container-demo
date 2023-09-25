@@ -50,8 +50,8 @@ jobs:
         sudo apt update && sudo apt install llvm
     - name: install Zig
       run: |
-        wget -qO- https://ziglang.org/download/${{env.ZIG_VERSION}}/zig-linux-${{env.ZIG_ARCH}}-${{env.ZIG_VERSION}}.tar.xz | tar -xJv -C ~/zig \
-        && export PATH=$PATH:~/zig
+        wget -qO- https://ziglang.org/download/${{env.ZIG_VERSION}}/zig-linux-${{env.ZIG_ARCH}}-${{env.ZIG_VERSION}}.tar.xz | tar xvf
+        && export PATH=$PATH:~/zig-linux-${{env.ZIG_ARCH}}-${{env.ZIG_VERSION}}
         && zig version
     - name: build the app for many different RIDs
       run: |
