@@ -17,29 +17,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdkflavor: [jammy-aot]
         arch: [amd64, arm64]
+        runtimeflavor: [jammy-chiseled, alpine]
         include:
-        # jammy can do both architectures, so the same metadata can be applied to both architectures
-        - sdkflavor: jammy-aot
-          runtimeflavor: jammy-chiseled-amd64
-          installcommand: apt update && apt install llvm -y
-          arch: amd64
-        - sdkflavor: jammy-aot
-          runtimeflavor: jammy-chiseled-arm64v8
+        - runtimeflavor: jammy-chiseled
+          os: linux
+        - runtimeflavor: alpine
+          os: linux-musl
+        - runtimeflavor: alpine
           arch: arm64
-          installcommand: apt update && apt install llvm -y
-        # alpine doesn't support cross-architecture, so need to fully specify each of those jobs
-        - sdkflavor: alpine-aot-amd64
-          runtimeflavor: alpine
-          arch: amd64
-          installcommand: 'true'
-        - sdkflavor: alpine-aot-arm64v8
-          runtimeflavor: alpine
+          dockerarch: arm64v8
+        - runtimeflavor: jammy-chiseled
           arch: arm64
-          installcommand: 'true'
+          dockerarch: arm64v8
 
-    name: "${{ matrix.sdkflavor }} => ${{ matrix.runtimeflavor }}-${{ matrix.arch }}"
+    name: "${{ matrix.runtimeflavor }}-${{ matrix.arch }}"
     runs-on: ubuntu-latest
     steps:
     - name: Login to ghcr.io
@@ -48,27 +40,22 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+    - name: set up qemu
+      uses: docker/setup-qemu-action@v1
     - name: Get the code
       uses: actions/checkout@v2
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
-    - name: build the app AOT-style
+    - name: install AOT prereqs
       run: |
-        docker run --rm --pull=always \
-          -v $(pwd)/src:/src \
-          -v ~/.docker/config.json:/root/.docker/config.json:ro \
-          -w /src/aot-sample \
-          mcr.microsoft.com/dotnet/nightly/sdk:8.0-${{ matrix.sdkflavor }} \
-          sh -c "
-            ${{matrix.installcommand}} && \
-            dotnet publish /t:PublishContainer \
-              -p ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-${{matrix.runtimeflavor}} \
-              -p ContainerRegistry=ghcr.io \
-              -p ContainerRepository=${{ github.repository_owner }}/aot-sample \
-              -p ContainerImageTag=${{matrix.runtimeflavor}}-${{matrix.arch}} \
-              --arch ${{matrix.arch}} \
-              -bl \
-          "
+        sudo apt update && sudo apt install zig llvm
+    - name: build the app for many different RIDs
+      run: |
+        dotnet publish /t:PublishContainer \
+          -p ContainerBaseImage=mcr.microsoft.com/dotnet/runtime-deps:8.0-${{matrix.runtimeflavor}}-${{matrix.dockerarch || matrix.arch}} \
+          -p ContainerRegistry=ghcr.io \
+          -p ContainerRepository=${{ github.repository_owner }}/aot-sample \
+          -p ContainerImageTag=${{matrix.runtimeflavor}}-${{matrix.dockerarch || matrix.arch}} \
+          --runtime ${{matrix.os}}-${{matrix.arch}} \
+          -bl
     - name: upload binlog
       uses: actions/upload-artifact@v3
       if: always()
@@ -77,10 +64,10 @@ jobs:
         name: ${{matrix.runtimeflavor}}-${{matrix.arch}}.binlog
     - name: run the just-built container
       run: |
-          docker run --rm ghcr.io/${{github.repository_owner}}/aot-sample:${{matrix.runtimeflavor}}-${{matrix.arch}}
+          docker run --rm ghcr.io/${{github.repository_owner}}/aot-sample:${{matrix.runtimeflavor}}-${{matrix.dockerarch || matrix.arch}}
     - name: inspect the just-built container
       run: |
-        docker history ghcr.io/${{github.repository_owner}}/aot-sample:${{matrix.runtimeflavor}}-${{matrix.arch}} --format "{{.ID}}: {{.Size}}"
+        docker history ghcr.io/${{github.repository_owner}}/aot-sample:${{matrix.runtimeflavor}}-${{matrix.dockerarch || matrix.arch}} --format "{{.ID}}: {{.Size}}"
 
   create-manifest-list:
     name: Create Manifest List for aot-sample
@@ -101,8 +88,8 @@ jobs:
       run: |
         docker manifest create ghcr.io/${{github.repository_owner}}/aot-sample:latest \
           ghcr.io/${{github.repository_owner}}/aot-sample:jammy-chiseled-amd64 \
-          ghcr.io/${{github.repository_owner}}/aot-sample:jammy-chiseled-arm64 \
+          ghcr.io/${{github.repository_owner}}/aot-sample:jammy-chiseled-arm64v8 \
           ghcr.io/${{github.repository_owner}}/aot-sample:alpine-amd64 \
-          ghcr.io/${{github.repository_owner}}/aot-sample:alpine-arm64
+          ghcr.io/${{github.repository_owner}}/aot-sample:alpine-arm64v8
 
         docker manifest push ghcr.io/${{github.repository_owner}}/aot-sample:latest

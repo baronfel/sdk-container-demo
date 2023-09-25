@@ -18,6 +18,9 @@
     <PackageReference
         Include="Microsoft.NET.Build.Containers"
         Version="8.0.100-rc.1.23455.21" />
+    <PackageReference
+        Include="PublishAotCross"
+        Version="1.0.0" />
   </ItemGroup>
 
 </Project>
