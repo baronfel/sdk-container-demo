@@ -50,9 +50,12 @@ jobs:
         sudo apt update && sudo apt install llvm
     - name: install Zig
       run: |
-        wget -qO- https://ziglang.org/download/${{env.ZIG_VERSION}}/zig-linux-${{env.ZIG_ARCH}}-${{env.ZIG_VERSION}}.tar.xz | tar xvf
-        && export PATH=$PATH:~/zig-linux-${{env.ZIG_ARCH}}-${{env.ZIG_VERSION}}
+        curl https://ziglang.org/download/${{env.ZIG_VERSION}}/zig-linux-${{env.ZIG_ARCH}}-${{env.ZIG_VERSION}}.tar.xz -o zig-linux-${{env.ZIG_ARCH}}-${{env.ZIG_VERSION}}.tar.xz \
+        && tar xvf zig-linux-${{env.ZIG_ARCH}}-${{env.ZIG_VERSION}}.tar.xz \
+        && export PATH=$PATH:$(pwd)/zig-linux-${{env.ZIG_ARCH}}-${{env.ZIG_VERSION}} \
         && zig version
+    - name: get .NET
+      uses: actions/setup-dotnet@v3
     - name: build the app for many different RIDs
       run: |
         dotnet publish /t:PublishContainer \
