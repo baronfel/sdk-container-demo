@@ -7,7 +7,8 @@ on:
 env:
   GITHUB_USERNAME: baronfel
   # GITHUB_TOKEN: ${{ secrets.CONTAINER_PUSH_PAT }}
-
+  ZIG_VERSION: 0.11.0
+  ZIG_ARCH: x86_64
 
 jobs:
   aot:
@@ -44,9 +45,14 @@ jobs:
       uses: docker/setup-qemu-action@v1
     - name: Get the code
       uses: actions/checkout@v2
-    - name: install AOT prereqs
+    - name: install LLVM
       run: |
-        sudo apt update && sudo apt install zig llvm
+        sudo apt update && sudo apt install llvm
+    - name: install Zig
+      run: |
+        wget -qO- https://ziglang.org/download/${{env.ZIG_VERSION}}/zig-linux-${{env.ZIG_ARCH}}-${{env.ZIG_VERSION}}.tar.xz | tar -xJv -C ~/zig \
+        && export PATH=$PATH:~/zig
+        && zig version
     - name: build the app for many different RIDs
       run: |
         dotnet publish /t:PublishContainer \
