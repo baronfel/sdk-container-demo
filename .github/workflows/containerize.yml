@@ -383,3 +383,22 @@ jobs:
           context: ./src/sdk-container-demo
           tags: chusk3/net-sdk-container-demo:dockerfile
           file: ./src/sdk-container-demo/Dockerfile-fdd
+
+  local-archive:
+    name: Publish an image to a local archive and read it in
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+      - name: Publish container to an archive
+        working-directory: ./src/sdk-container-demo
+        run: |
+          mkdir images \
+          && dotnet publish -p PublishProfile=DefaultContainer -p ContainerArchiveOutputPath=images /bl
+      - name: List tarballs
+        run: ls -l ./src/sdk-container-demo/images
+      - name: Load image into Docker
+        run: docker load -i ./src/sdk-container-demo/images/*
+      - name: Show loaded image
+        run: docker image list sdk-container-demo
