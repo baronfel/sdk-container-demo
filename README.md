@@ -9,6 +9,8 @@ The most interesting parts of this repo are
 * The [workflow definition](.github/workflows/containerize.yml)
 * An [example Action run](https://github.com/baronfel/sdk-container-demo/runs/7888742074?check_suite_focus=true) showing the container push to Azure Container Registry
 
+All of the following commands assume you are running from the [`src/sdk-container-demo`](src/sdk-container-demo/) directory/project.
+
 ## Global prerequisites
 
 The commands below will probably require
@@ -19,7 +21,7 @@ The commands below will probably require
 
 ## Running the app locally
 
-The different publish profiles in the [publish_profiles](./Properties/PublishProfiles/) directory target different use cases, which are described below.
+The different publish profiles in the [publish_profiles](src/sdk-container-demo/Properties/PublishProfiles/) directory target different use cases, which are described below.
 
 ### Publish to local Docker
 
