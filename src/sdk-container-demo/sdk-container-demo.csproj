@@ -7,6 +7,7 @@
     <RootNamespace>sdk_container_demo</RootNamespace>
     <SelfContained>false</SelfContained>
     <EnableSdkContainerSupport>false</EnableSdkContainerSupport>
+    <RuntimeIdentifiers>linux-x64;linux-arm64</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference
@@ -39,6 +40,21 @@
     <MSBuild
         Projects="@(SingleRegistryPublish)"
         Targets="PublishContainer"
+        BuildInParallel="true" />
+  </Target>
+
+  <!-- Example of how to push for multiple architectures using the RIDs on this project -->
+  <Target Name="MultiArchPublish">
+    <ItemGroup>
+      <_RIDItems Include="$(RuntimeIdentifiers)" />
+      <_ContainerPublish
+          Include="$(MSBuildProjectFullPath)"
+          AdditionalProperties="RuntimeIdentifier=%(_RIDItems.Identity);ContainerImageTag=latest-%(_RIDItems.Identity)" />
+    </ItemGroup>
+
+    <MSBuild
+        Projects="@(_ContainerPublish)"
+        Targets="Publish;PublishContainer"
         BuildInParallel="true" />
   </Target>
 </Project>
