@@ -22,7 +22,7 @@
     <PackageProjectUrl>https://github.com/baronfel/sdk-container-demo</PackageProjectUrl>
     <PackageDocumentationUrl>https://github.com/baronfel/sdk-container-demo/blob/main/README.md</PackageDocumentationUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Title>.NET SDK 7 Container Demo</Title>
+    <Title>.NET SDK 8 Container Demo</Title>
   </PropertyGroup>
 
   <!-- Example of how you could push the same image to multiple registries via a single target-->
@@ -46,15 +46,46 @@
   <!-- Example of how to push for multiple architectures using the RIDs on this project -->
   <Target Name="MultiArchPublish">
     <ItemGroup>
-      <_RIDItems Include="$(RuntimeIdentifiers)" />
+      <_RIDItems Include="linux-x64" Tag="amd64" />
+      <_RIDItems Include="linux-arm64" Tag="arm64" />
       <_ContainerPublish
           Include="$(MSBuildProjectFullPath)"
-          AdditionalProperties="RuntimeIdentifier=%(_RIDItems.Identity);ContainerImageTag=latest-%(_RIDItems.Identity)" />
+          AdditionalProperties="RuntimeIdentifier=%(_RIDItems.Identity);ContainerImageTag=latest-%(_RIDItems.Tag)" />
     </ItemGroup>
 
     <MSBuild
         Projects="@(_ContainerPublish)"
         Targets="Publish;PublishContainer"
         BuildInParallel="true" />
+    
+    <Message Text="Created architecture-specific images, now creating manifest list" Condition="'$(ContainerRegistry)' != ''" Importance="High" />
+    <!-- 
+      If we pushed to an actual registry we can make a multi-arch image here. We need the image name and the tags to do so.
+      However, the PublishContainer targt doesn't actually emit the name or tags so we have to reconstruct it.
+      This is a gap, we should fill it.
+
+      NOTE: We can only create the multi-arch manifest if we pushed to a registry. This is a fundamental constraint.
+    -->
+    <!-- Call ComputeContainerConfig on this project so that the properties it sets are visible -->
+    <MSBuild Projects="$(MSBuildThisFile)" Targets="ComputeContainerConfig" Condition="'$(ContainerRegistry)' != ''" />
+    <!-- Now we can compute the name of our new manifest -->
+    <PropertyGroup>
+      <_ContainerManifestFullName>$(ContainerRegistry)/$(ContainerRepository):latest</_ContainerManifestFullName>
+    </PropertyGroup>
+    <!-- And we can also compute the name of each image that will go into the manifest - this is something that ideally would 
+          just be an Output of PublishContainer. -->
+    <ItemGroup Condition="'$(ContainerRegistry)' != ''">
+      <_RidItems>
+        <FullImageName>$(_ContainerManifestFullName)-%(Tag)</FullImageName>
+      </_RidItems>
+    </ItemGroup>
+    <!-- Now that we have those data points, shove the image variants into a manifest, and push that manifest to the destination -->
+    <Exec
+        Condition="'$(ContainerRegistry)' != ''"
+        Command="docker manifest create $(_ContainerManifestFullName) @(_RidItems->'%(FullImageName)', ' ') --amend" />
+    <Exec
+        Condition="'$(ContainerRegistry)' != ''"
+        Command="docker manifest push $(_ContainerManifestFullName)" />
+    <Message Text="Created and pushed manifest list $(_ContainerManifestFullName)" Condition="'$(ContainerRegistry)' != ''" Importance="High" />
   </Target>
 </Project>
