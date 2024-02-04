@@ -173,6 +173,35 @@ jobs:
         with:
           profile: aws-private
 
+  aws-private-credhelper:
+    name: AWS ECR (Private) with Docker Credential Helper
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: install ECR Credential Provider
+        run: |
+          go install github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login@latest
+          echo "$(go env GOPATH)" >> $GITHUB_PATH
+
+      - name: setup ECR Credential Provider
+        run: |
+          echo "DOCKER_CONFIG=$PWD/ecr-example" >> "$GITHUB_ENV"
+
+      - uses: ./.github/actions/publishAndLog
+        with:
+          profile: aws-private
+
   aws-public:
     name: AWS ECR (Public)
     runs-on: ubuntu-latest
@@ -276,7 +305,7 @@ jobs:
           profile: localdocker
           variant: trimmedandchiseled
           selfContained: "true"
-      
+
       - name: List images
         run: docker image list --all
 

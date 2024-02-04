@@ -6,16 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>sdk_container_demo</RootNamespace>
     <SelfContained>false</SelfContained>
-    <EnableSdkContainerSupport>false</EnableSdkContainerSupport>
     <RuntimeIdentifiers>linux-x64;linux-arm64</RuntimeIdentifiers>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference
-        Include="Microsoft.NET.Build.Containers"
-        Version="8.0.100-dev" />
-    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3.linux" Version="1.1.14" />
-  </ItemGroup>
-
+  
   <PropertyGroup Label="Packaging properties">
     <Description>A project that demonstrates publishing to various container registries using just
       the .NET SDK</Description>
