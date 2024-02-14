@@ -8,16 +8,11 @@
     <Nullable>enable</Nullable>
     <PublishAot>true</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
   </PropertyGroup>
 
   <ItemGroup>
 
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference
-        Include="Microsoft.NET.Build.Containers"
-        Version="8.0.100-rc.1.23455.21" />
   </ItemGroup>
 
 </Project>
