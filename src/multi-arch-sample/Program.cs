@@ -1,0 +1,1 @@
+﻿Console.WriteLine($"Hello, World from {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription} on {System.Runtime.InteropServices.RuntimeInformation.OSDescription} with {System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture} chips!");
