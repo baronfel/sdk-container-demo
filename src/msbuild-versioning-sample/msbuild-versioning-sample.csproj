@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>msbuild_versioning_example</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ionide.KeepAChangelog.Tasks" Version="0.1.8" />
+  </ItemGroup>
+
+  <!-- Ionide.KeepAChangelog.Tasks has set the Version, PackageVersion, PackageReleaseNotes properties, 
+       and I want to use those to set the tags for my container. -->
+  <Target Name="SetContainerTags" BeforeTargets="ComputeContainerConfig">
+    <PropertyGroup>
+      <ContainerImageTags>latest;$(Version)</ContainerImageTags>
+    </PropertyGroup>
+  </Target>
+
+</Project>
