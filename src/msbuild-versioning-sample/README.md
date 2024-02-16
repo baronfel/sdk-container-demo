@@ -23,3 +23,5 @@ To fix this, we need to set the property sometime _after_ Ionide.KeepAChangelog.
 ```
 
 Now, when we publish, we'll make containers with tags like `msbuild-versioning-sample:latest` and `msbuild-versioning-sample:0.1.0`.
+
+You can see what this looks like GitHub Actions [here](https://github.com/baronfel/sdk-container-demo/actions/workflows/msbuild-versioning-sample.yml)
