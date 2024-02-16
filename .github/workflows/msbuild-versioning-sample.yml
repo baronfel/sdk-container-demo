@@ -1,0 +1,34 @@
+name: How to use MSBuild packages to influence the tags of the image
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  GITHUB_USERNAME: baronfel
+  APP_NAME: msbuild-versioning-sample
+
+jobs:
+  create-multiarch-image:
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Login to ghcr.io
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Get the code
+      uses: actions/checkout@v2
+
+    - name: Get .NET
+      uses: actions/setup-dotnet@v4
+
+    - name: build the image
+      working-directory: src/msbuild-versioning-sample
+      run: |
+        dotnet publish -t:PublishContainer -p ContainerRepository=${{github.repository_owner}}/${{env.APP_NAME}} -p ContainerRegistry=ghcr.io
