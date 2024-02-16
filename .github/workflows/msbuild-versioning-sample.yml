@@ -9,7 +9,7 @@ env:
   APP_NAME: msbuild-versioning-sample
 
 jobs:
-  create-multiarch-image:
+  build-an-app:
     permissions:
       contents: read
       packages: write
