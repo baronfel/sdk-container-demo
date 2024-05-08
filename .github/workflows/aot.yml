@@ -34,10 +34,11 @@ jobs:
           runtimeflavor: alpine
           arch: amd64
           installcommand: 'true'
-        - sdkflavor: alpine-aot-arm64v8
-          runtimeflavor: alpine
-          arch: arm64
-          installcommand: 'true'
+        # arm64 emulation is flaky for alpine so we will skip this for now
+        # - sdkflavor: alpine-aot-arm64v8
+        #   runtimeflavor: alpine
+        #   arch: arm64
+        #   installcommand: 'true'
 
     name: "${{ matrix.sdkflavor }} => ${{ matrix.runtimeflavor }}-${{ matrix.arch }}"
     runs-on: ubuntu-latest
@@ -102,7 +103,6 @@ jobs:
         docker manifest create ghcr.io/${{github.repository_owner}}/aot-sample:latest \
           ghcr.io/${{github.repository_owner}}/aot-sample:jammy-chiseled-amd64 \
           ghcr.io/${{github.repository_owner}}/aot-sample:jammy-chiseled-arm64 \
-          ghcr.io/${{github.repository_owner}}/aot-sample:alpine-amd64 \
-          ghcr.io/${{github.repository_owner}}/aot-sample:alpine-arm64
+          ghcr.io/${{github.repository_owner}}/aot-sample:alpine-amd64
 
         docker manifest push ghcr.io/${{github.repository_owner}}/aot-sample:latest
