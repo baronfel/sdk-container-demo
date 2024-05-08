@@ -7,6 +7,8 @@ on:
 env:
   GITHUB_USERNAME: baronfel
   BASE_IMAGE: "ghcr.io/baronfel/dotnet-runtime-skia-base-image:8.0"
+  IMAGE_NAME: baronfel/skia-app
+  IMAGE_TAG: "8.0"
 
 jobs:
   create-base-image:
@@ -36,7 +38,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-
     runs-on: ubuntu-latest
     steps:
     - name: Login to ghcr.io
@@ -52,7 +53,30 @@ jobs:
     - name: Get the code
       uses: actions/checkout@v2
 
-    - name: Build the app
+    - name: Build and publish the app
       working-directory: src/custom-base-image
       run: |
-        dotnet publish -t:PublishContainer -p ContainerBaseImage="${{ env.BASE_IMAGE }}"
+        dotnet publish -t:PublishContainer \
+          -p ContainerBaseImage="${{ env.BASE_IMAGE }}" \
+          -p ContainerRepository="${{ env.IMAGE_NAME}}" \
+          -p ContainerImageTag="${{ env.IMAGE_TAG }}" \
+          -p ContainerRegistry=ghcr.io
+
+  run-the-image:
+    needs: use-base-image
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Login to ghcr.io
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Execute the container
+      run: |
+        docker run --pull missing --rm ghcr.io/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
