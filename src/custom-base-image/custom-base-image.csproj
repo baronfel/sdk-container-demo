@@ -10,4 +10,9 @@
     <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="2.88.8" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.8" />
+  </ItemGroup>
+
 </Project>
