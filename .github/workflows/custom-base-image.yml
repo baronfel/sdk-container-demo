@@ -25,7 +25,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Get the code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Build the base image
       working-directory: src/custom-base-image
@@ -51,7 +51,7 @@ jobs:
       uses: actions/setup-dotnet@v4
 
     - name: Get the code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Build and publish the app
       working-directory: src/custom-base-image

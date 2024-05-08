@@ -23,7 +23,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Get the code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Get .NET
       uses: actions/setup-dotnet@v4
