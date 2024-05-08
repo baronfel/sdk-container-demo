@@ -1,0 +1,54 @@
+name: Custom Base Image Example
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  GITHUB_USERNAME: baronfel
+  BASE_IMAGE: "ghcr.io/baronfel/dotnet-runtime-skia-base-image:8.0"
+
+jobs:
+  create-base-image:
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Login to ghcr.io
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Get the code
+      uses: actions/checkout@v2
+
+    - name: Build the base image
+      working-directory: src/custom-base-image
+      run: |
+        docker build -t ${{ env.BASE_IMAGE }} -f Dockerfile .
+        docker push ${{ env.BASE_IMAGE }}
+
+  use-base-image:
+    needs: create-base-image
+    permissions:
+      contents: read
+      packages: write
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Login to ghcr.io
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Get .NET
+      uses: actions/setup-dotnet@v4
+
+    - name: Build the app
+      run: |
+        dotnet publish -t:PublishContainer -p ContainerBaseImage="${{ env.BASE_IMAGE }}"
