@@ -50,5 +50,6 @@ jobs:
       uses: actions/setup-dotnet@v4
 
     - name: Build the app
+      working-directory: src/custom-base-image
       run: |
         dotnet publish -t:PublishContainer -p ContainerBaseImage="${{ env.BASE_IMAGE }}"
