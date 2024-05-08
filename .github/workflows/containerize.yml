@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -40,7 +40,7 @@ jobs:
 
     environment: production
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -78,7 +78,7 @@ jobs:
 
     environment: production
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -112,7 +112,7 @@ jobs:
     name: GitHub Package Registry
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -134,7 +134,7 @@ jobs:
     env:
       SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: true
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -151,7 +151,7 @@ jobs:
     name: AWS ECR (Private)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -177,7 +177,7 @@ jobs:
     name: AWS ECR (Private) with Docker Credential Helper
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -206,7 +206,7 @@ jobs:
     name: AWS ECR (Public)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -234,7 +234,7 @@ jobs:
     name: GitLab Container Registry
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -254,7 +254,7 @@ jobs:
     name: Google Cloud Artifact Registry
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -276,7 +276,7 @@ jobs:
     name: Local Docker Daemon
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -295,7 +295,7 @@ jobs:
     name: Local Docker Daemon, Chiseled Ubuntu container
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -316,7 +316,7 @@ jobs:
       name: Local Podman installation
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v3
+        - uses: actions/checkout@v4
 
         - name: Setup .NET SDK
           uses: actions/setup-dotnet@v2
@@ -335,7 +335,7 @@ jobs:
     name: Push to Docker hub
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -355,7 +355,7 @@ jobs:
     name: Push to Quay.io
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -377,7 +377,7 @@ jobs:
     # harbor is disabled because we don't have a persistent account/location to push to
     if: false
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
@@ -397,7 +397,7 @@ jobs:
     name: Build Dockerfile as a comparison
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: publish self-contained
         uses: docker/build-push-action@v4
@@ -417,7 +417,7 @@ jobs:
     name: Publish an image to a local archive and read it in
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
       - name: Publish container to an archive
