@@ -89,7 +89,9 @@ namespace SkiaSharpConsoleDemo
             // encode the image as a PNG
             var data = image.Encode(SKEncodedImageFormat.Png, 100);
             // save the PNG to disk
-            using (var stream = File.OpenWrite("output.png"))
+            var userHome = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            var outputPng = Path.Combine(userHome, "output.png");
+            using (var stream = File.OpenWrite(outputPng))
             {
                 // copy the encoded image into the file stream
                 data.SaveTo(stream);
