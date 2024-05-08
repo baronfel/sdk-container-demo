@@ -16,3 +16,5 @@ To build and run the sample, follow these steps:
 
 > [!IMPORTANT]
 > Pushing images to a registry may require authentication, both on the push and pull side. Make sure you have the necessary credentials to access the registry you are using.
+
+You can see an end-to-end example of using this sample in [these GitHub Actions](https://github.com/baronfel/sdk-container-demo/actions/workflows/custom-base-image.yml) - see the [workflow](./../../.github/workflows/custom-base-image.yml) in this registry
