@@ -14,5 +14,6 @@ So far we have the following samples:
 * [Using a custom base image container instead of the Microsoft-provided base images](./src/custom-base-image/)
 * [Building a 'multi-architecture' container image](./src/multi-arch-sample/)
 * [Containerizing AOT applications](./src/aot-sample/)
+* [Creating a container with a custom EntryPoint script](./src/custom-entrypoint/)
 
 Please log issues to suggest more examples!

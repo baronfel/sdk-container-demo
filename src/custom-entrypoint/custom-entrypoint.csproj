@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>custom_entrypoint</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Tell the tooling to use the custom entrypoint script -->
+    <ContainerAppCommand Include="/app/my-entrypoint" />
+    <!-- Tell the tooling to pass the app's invoking call to the entrypoint script 
+         so the script can invoke the app -->
+    <ContainerAppCommandArgs Include="dotnet;/app/custom-entrypoint.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Include the entrypoint script in the publish output, so it ends up in the container -->
+    <None Include="my-entrypoint" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

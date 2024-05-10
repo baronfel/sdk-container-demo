@@ -1,0 +1,6 @@
+#! /bin/env sh
+
+echo "running the custom entrypoint"
+
+# now run the rest of the args
+"$@"
