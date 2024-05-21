@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <RootNamespace>netfx_container</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>preview</LangVersion>
+    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
+    <PublishSingleFile>false</PublishSingleFile>
+    <ContainerBaseImage>mcr.microsoft.com/dotnet/framework/runtime:4.7.2</ContainerBaseImage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ContainerEntrypoint Include="C:\app\netfx-container.exe" />
+  </ItemGroup>
+
+</Project>
