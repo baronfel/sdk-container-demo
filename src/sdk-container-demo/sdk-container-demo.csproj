@@ -90,7 +90,7 @@
         Targets="Publish;PublishContainer"
         BuildInParallel="true" />
 
-    <Message Text="Created architecture-specific images, now creating manifest list" Condition="'$(ContainerRegistry)' != ''" Importance="High" />
+    <Message Text="Created architecture-specific images, now creating manifest list" Importance="High" />
 
     <!--
       If we pushed to an actual registry we can make a multi-arch image here. We need the image name and the tags to do so.
@@ -100,7 +100,7 @@
       NOTE: We can only create the multi-arch manifest if we pushed to a registry. This is a fundamental constraint, so that condition has been applied to all of this code
     -->
     <!-- Call ComputeContainerConfig on this project so that the properties it sets are visible -->
-    <MSBuild Projects="$(MSBuildThisFile)" Targets="ComputeContainerConfig" Condition="'$(ContainerRegistry)' != ''" />
+    <MSBuild Projects="$(MSBuildThisFile)" Targets="ComputeContainerConfig"  />
 
     <!-- To make a manifest we need to know the name of the manifest (e.g. mcr.microsoft.com/dotnet/sdk:8.0) and the names of all of the
          architecture-specific images that go into that manifest (e.g. mcr.microsoft.com/dotnet/sdk:8.0-arm64, mcr.microsoft.com/dotnet/sdk:8.0-amd64, etc).
@@ -116,10 +116,20 @@
       </_RIDSForTag>
     </ItemGroup>
 
+    <ItemGroup Condition="'$(ContainerRegistry)' == ''">
+      <!-- We'll need to group by 'tag' here to get the manifest names (the nice tags). To make that easier, let's add the parent manifest name and the
+          'final' container name onto each of our already-RID-aware Tag items.   -->
+      <_RIDSForTag>
+        <FullImageName>$(ContainerRepository):%(Identity)-%(GolangArch)</FullImageName>
+        <ParentManifestName>$(ContainerRepository):%(Identity)</ParentManifestName>
+      </_RIDSForTag>
+    </ItemGroup>
+
     <!-- armed with that data, we can easily batch these Task calls. '%(_RIDSForTag.ParentManifestName)' filters _RIDSForTag down to all items that have the same ParentManifestName.
          this means that we can refer to @(_RIDSForTag) here as only the Items for the images for this manifest! From there it's easy to splat the FullImageName onto the CLI calls. -->
-    <Exec Condition="'$(ContainerRegistry)' != ''" Command="docker manifest create %(_RIDSForTag.ParentManifestName) @(_RIDSForTag->'%(FullImageName)', ' ') --amend" />
-    <Exec Condition="'$(ContainerRegistry)' != ''" Command="docker manifest push %(_RIDSForTag.ParentManifestName)" />
-    <Message Text="Created and pushed manifest list %(_RIDSForTag.ParentManifestName)" Condition="'$(ContainerRegistry)' != ''" Importance="High" />
+    <Exec Command="podman manifest create %(_RIDSForTag.ParentManifestName) @(_RIDSForTag->'%(FullImageName)', ' ')" />
+    <Message Text="Created manifest list %(_RIDSForTag.ParentManifestName)" Importance="High" />
+    <Exec Command="podman manifest push %(_RIDSForTag.ParentManifestName)" Condition="'$(ContainerRegistry)' != ''" />
+    <Message Text="Pushed manifest list %(_RIDSForTag.ParentManifestName) to $(ContainerRegistry)" Condition="'$(ContainerRegistry)' != ''" Importance="High" />
   </Target>
 </Project>
