@@ -27,7 +27,7 @@ runs:
       shell: bash
       if: contains(fromJson(inputs.selfContained), true) && contains(fromJson(inputs.chunked), false)
       continue-on-error: true
-      run: dotnet publish -p PublishProfile=${{ inputs.profile }} --self-contained true -p ContainerImageTags='"${{ inputs.variant }}-sc-atomic;latest-sc-atomic"' /bl
+      run: dotnet publish -p PublishProfile=${{ inputs.profile }} --self-contained true -p ContainerImageTag='"${{ inputs.variant }}-sc-atomic"' /bl
       working-directory: ${{ inputs.cwd }}
       env:
         SDK_CONTAINER_DEBUG_REGISTRY_FORCE_CHUNKED_UPLOAD: "false"
@@ -43,7 +43,7 @@ runs:
       shell: bash
       continue-on-error: true
       if: contains(fromJson(inputs.selfContained), false) && contains(fromJson(inputs.chunked), false)
-      run: dotnet publish -p PublishProfile=${{ inputs.profile }} --self-contained false -p ContainerImageTags='"${{ inputs.variant }}-fdd-atomic;latest-fdd-atomic"' /bl
+      run: dotnet publish -p PublishProfile=${{ inputs.profile }} --self-contained false -p ContainerImageTag='"${{ inputs.variant }}-fdd-atomic"' /bl
       working-directory: ${{ inputs.cwd }}
       env:
         SDK_CONTAINER_DEBUG_REGISTRY_FORCE_CHUNKED_UPLOAD: "false"
@@ -59,7 +59,7 @@ runs:
       shell: bash
       continue-on-error: true
       if: contains(fromJson(inputs.selfContained), true) && contains(fromJson(inputs.chunked), true)
-      run: dotnet publish -p PublishProfile=${{ inputs.profile }} --self-contained true -p ContainerImageTags='"${{ inputs.variant }}-sc-chunked;latest-sc-chunked"' /bl
+      run: dotnet publish -p PublishProfile=${{ inputs.profile }} --self-contained true -p ContainerImageTag='"${{ inputs.variant }}-sc-chunked"' /bl
       working-directory: ${{ inputs.cwd }}
       env:
         SDK_CONTAINER_DEBUG_REGISTRY_FORCE_CHUNKED_UPLOAD: "true"
@@ -75,7 +75,7 @@ runs:
       shell: bash
       continue-on-error: true
       if: contains(fromJson(inputs.selfContained), false) && contains(fromJson(inputs.chunked), true)
-      run: dotnet publish -p PublishProfile=${{ inputs.profile }} --self-contained false -p ContainerImageTags='"${{ inputs.variant }}-fdd-chunked;latest-fdd-chunked' /bl
+      run: dotnet publish -p PublishProfile=${{ inputs.profile }} --self-contained false -p ContainerImageTag='"${{ inputs.variant }}-fdd-chunked' /bl
       working-directory: ${{ inputs.cwd }}
       env:
         SDK_CONTAINER_DEBUG_REGISTRY_FORCE_CHUNKED_UPLOAD: "true"
