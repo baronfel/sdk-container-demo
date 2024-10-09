@@ -31,4 +31,4 @@ jobs:
     - name: build the image
       working-directory: src/msbuild-versioning-sample
       run: |
-        dotnet publish -t:PublishContainer -p ContainerRepository=${{github.repository_owner}}/${{env.APP_NAME}} -p ContainerRegistry=ghcr.io
+        dotnet publish -t:PublishContainer -p ContainerRepository=${{github.repository_owner}}/${{env.APP_NAME}} -p ContainerRegistry=ghcr.io /check

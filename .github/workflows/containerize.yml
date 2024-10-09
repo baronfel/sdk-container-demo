@@ -424,7 +424,7 @@ jobs:
         working-directory: ./src/sdk-container-demo
         run: |
           mkdir images \
-          && dotnet publish -p PublishProfile=DefaultContainer -p ContainerArchiveOutputPath=images /bl
+          && dotnet publish -t:PublishContainer -p ContainerArchiveOutputPath=images /bl -r linux-x64 /check
       - name: List tarballs
         run: ls -l ./src/sdk-container-demo/images
       - name: Load image into Docker

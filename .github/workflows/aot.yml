@@ -69,6 +69,7 @@ jobs:
               -p ContainerImageTag=${{matrix.runtimeflavor}}-${{matrix.arch}} \
               --arch ${{matrix.arch}} \
               -bl \
+              /check
           "
     - name: upload binlog
       uses: actions/upload-artifact@v3

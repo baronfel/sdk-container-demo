@@ -60,7 +60,8 @@ jobs:
           -p ContainerBaseImage="${{ env.BASE_IMAGE }}" \
           -p ContainerRepository="${{ env.IMAGE_NAME}}" \
           -p ContainerImageTag="${{ env.IMAGE_TAG }}" \
-          -p ContainerRegistry=ghcr.io
+          -p ContainerRegistry=ghcr.io \
+          /check
 
   run-the-image:
     needs: use-base-image

@@ -32,14 +32,14 @@ jobs:
       id: build-x64
       working-directory: src/multi-arch-sample
       run: |
-        dotnet publish -t:PublishContainer --arch x64 -p ContainerImageTag=latest-x64 -p ContainerRepository=${{github.repository_owner}}/${{env.APP_NAME}} -p ContainerRegistry=ghcr.io
+        dotnet publish -t:PublishContainer --arch x64 -p ContainerImageTag=latest-x64 -p ContainerRepository=${{github.repository_owner}}/${{env.APP_NAME}} -p ContainerRegistry=ghcr.io /check
         echo "generated_container_name=ghcr.io/${{github.repository_owner}}/${{env.APP_NAME}}:latest-x64" >> $GITHUB_OUTPUT
 
     - name: build the arm64 image
       id: build-arm64
       working-directory: src/multi-arch-sample
       run: |
-        dotnet publish -t:PublishContainer --arch arm64 -p ContainerImageTag=latest-arm64 -p ContainerRepository=${{github.repository_owner}}/${{env.APP_NAME}} -p ContainerRegistry=ghcr.io
+        dotnet publish -t:PublishContainer --arch arm64 -p ContainerImageTag=latest-arm64 -p ContainerRepository=${{github.repository_owner}}/${{env.APP_NAME}} -p ContainerRegistry=ghcr.io /check
         echo "generated_container_name=ghcr.io/${{github.repository_owner}}/${{env.APP_NAME}}:latest-arm64" >> $GITHUB_OUTPUT
 
     - name: create the multi-image manifest
