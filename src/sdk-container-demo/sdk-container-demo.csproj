@@ -24,7 +24,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SecretsDetectionCheck" Version="4.0.0"/>
+		<PackageReference Include="SecretsDetectionCheck" Version="6.0.0"/>
 	</ItemGroup>
 
 	<!-- Example of how you could push the same image to multiple registries via a single target-->
