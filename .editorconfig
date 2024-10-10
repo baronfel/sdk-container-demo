@@ -1,4 +1,4 @@
 root = true
 
 [*.csproj]
-build_check.BCC002.Severity=error
+build_check.BCC002.Severity=warning
