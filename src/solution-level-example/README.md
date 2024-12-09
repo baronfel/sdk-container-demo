@@ -43,3 +43,5 @@ performance.
             
     </Target>
 ```
+
+This target can be run while at the solution level with `dotnet build -t:ContainerizeMyApps`.
