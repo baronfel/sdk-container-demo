@@ -1,0 +1,27 @@
+<Project>
+    <Target Name="ContainerizeMyApps">
+        <!-- Declare the apps to be containerized -->
+        <ItemGroup>
+            <App Include="App1/App1.csproj" AdditionalProperties="RuntimeIdentifier=linux-x64" />
+            <App Include="App2/App2.csproj" AdditionalProperties="RuntimeIdentifier=linux-arm64" />
+        </ItemGroup>
+        
+        <!-- Make sure we restore the projects for the correct RID to get 
+             and runtimes/apphosts/etc that are required -->
+        <MSBuild 
+            Projects="@(App)"
+            Properties="Configuration=Release;"
+            Targets="Restore"
+             />
+
+        <!-- Do the publish - Note that PublishContainer doesn't chain publish itself,
+             so we have to do it. Note also that we are setting the gross _IsPublishing
+             hack to keep behavior with the CLI publish command. -->
+        <MSBuild 
+            Projects="@(App)"
+            Properties="Configuration=Release;_IsPublishing=true"
+            Targets="Publish;PublishContainer"
+            BuildInParallel="true"
+             />
+    </Target>
+</Project>

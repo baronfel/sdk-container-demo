@@ -16,5 +16,6 @@ So far we have the following samples:
 * [Containerizing AOT applications](./src/aot-sample/)
 * [Creating a container with a custom EntryPoint script](./src/custom-entrypoint/)
 * [Containerizing a .NET Framework application for Windows](./src/netfx-container/)
+* [Containerizing multiple apps in a solution](./src/solution-level-example/)
 
 Please log issues to suggest more examples!
